@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mein Konto – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="configurator.html">Konfigurator</a></li>
+        </ul>
+        <div class="nav-icons">
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="account-page">
+      <div class="container">
+        <h1 style="color: var(--champagne); margin-bottom: 40px" class="reveal">
+          Konto <span class="text-gold">deaktiviert</span>
+        </h1>
+        <div class="empty-state">
+          <div class="empty-state-icon">👤</div>
+          <h2>Diese Funktion ist deaktiviert</h2>
+          <p>
+            Login, Profil, gespeicherte Konfigurationen und Bestellungen sind in
+            dieser Version nicht verfügbar.
+          </p>
+          <a href="configurator.html" class="btn btn-primary"
+            >Zum Konfigurator</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>Exklusiver Schmuck, individuell gestaltet.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Konto</h4>
+            <ul></ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="index.html#features">Überblick</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

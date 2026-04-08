@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Konfigurator – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdn.babylonjs.com/babylon.js" defer></script>
+    <script
+      src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"
+      defer
+    ></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/products.js" defer></script>
+    <script src="js/configurator.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="configurator.html" class="active">Konfigurator</a></li>
+        </ul>
+        <div class="nav-icons">
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="page-header">
+      <div class="container">
+        <h1 class="reveal">
+          Schmuck <span class="text-gold">Konfigurator</span>
+        </h1>
+        <p class="reveal">
+          Gestalte dein persönliches Schmuckstück in Echtzeit.
+        </p>
+      </div>
+    </div>
+
+    <section class="section" id="productSelection">
+      <div class="container">
+        <h2 class="section-title reveal">Wähle dein <span>Produkt</span></h2>
+        <div class="filter-bar reveal" id="configCategoryFilter">
+          <button class="filter-btn active" data-category="ringe">Ringe</button>
+          <button class="filter-btn" data-category="armbaender">
+            Armbänder
+          </button>
+        </div>
+        <div class="products-grid" id="configProductGrid"></div>
+      </div>
+    </section>
+
+    <section class="hidden" id="configuratorSection">
+      <div class="wizard-fullscreen">
+        <div class="wizard-topbar">
+          <button class="wizard-back-btn" id="backToProducts">
+            <i class="fas fa-arrow-left"></i> <span>Zurück</span>
+          </button>
+          <h2 class="wizard-product-name" id="configProductName">
+            Konfigurieren
+          </h2>
+          <div class="wizard-topbar-right">
+            <div class="wizard-price-compact">
+              <span class="wizard-price-label">Gesamt</span>
+              <span class="wizard-price-value" id="configTotalPrice"
+                >€ 0,00</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-steps-indicator" id="stepsIndicator">
+          <div class="wizard-step-dot active" data-step="0">
+            <span>Art</span>
+          </div>
+          <div class="wizard-step-line"></div>
+          <div class="wizard-step-dot" data-step="1"><span>Material</span></div>
+          <div class="wizard-step-line"></div>
+          <div class="wizard-step-dot" data-step="2"><span>Größe</span></div>
+          <div class="wizard-step-line"></div>
+          <div class="wizard-step-dot" data-step="3"><span>Form</span></div>
+          <div class="wizard-step-line"></div>
+          <div class="wizard-step-dot" data-step="4"><span>Gravur</span></div>
+          <div class="wizard-step-line"></div>
+          <div class="wizard-step-dot" data-step="5"><span>Fertig</span></div>
+        </div>
+
+        <div class="wizard-main">
+          <div class="wizard-3d">
+            <canvas id="babylon-canvas"></canvas>
+          </div>
+
+          <div class="wizard-panel">
+            <div class="wizard-step-content active" data-step="0">
+              <div class="config-group">
+                <div class="config-group-title">
+                  <i class="fas fa-layer-group"></i> Art wählen
+                </div>
+                <div class="config-options" id="configTypes"></div>
+              </div>
+            </div>
+
+            <div class="wizard-step-content" data-step="1">
+              <div class="config-group">
+                <div class="config-group-title">
+                  <i class="fas fa-gem"></i> Material wählen
+                </div>
+                <div class="config-options" id="configMaterials"></div>
+              </div>
+            </div>
+
+            <div class="wizard-step-content" data-step="2">
+              <div class="config-group">
+                <div class="config-group-title">
+                  <i class="fas fa-ruler"></i> Größe wählen
+                </div>
+                <div class="config-options" id="configSizes"></div>
+              </div>
+            </div>
+
+            <div class="wizard-step-content" data-step="3">
+              <div class="config-group">
+                <div class="config-group-title">
+                  <i class="fas fa-shapes"></i> Form wählen
+                </div>
+                <div class="config-options" id="configShapes"></div>
+              </div>
+            </div>
+
+            <div class="wizard-step-content" data-step="4">
+              <div class="config-group">
+                <div class="config-group-title">
+                  <i class="fas fa-pen-nib"></i> Gravur (optional)
+                </div>
+                <div
+                  class="config-options"
+                  id="configEngravings"
+                  style="margin-bottom: 12px"
+                ></div>
+                <input
+                  type="text"
+                  class="config-input"
+                  id="engravingText"
+                  placeholder="Gravurtext eingeben..."
+                  maxlength="20"
+                  disabled
+                />
+                <small class="engraving-char-count" id="engravingCharCount"
+                  >0/20 Zeichen</small
+                >
+              </div>
+            </div>
+
+            <div class="wizard-step-content" data-step="5">
+              <div class="config-group wizard-summary-group">
+                <div class="config-group-title">
+                  <i class="fas fa-check-circle"></i> Zusammenfassung
+                </div>
+                <div class="wizard-summary" id="wizardSummary"></div>
+                <div class="price-display">
+                  <div class="price-label">Gesamtpreis</div>
+                  <div class="price-value" id="configTotalPriceFinal">
+                    € 0,00
+                  </div>
+                  <div class="price-breakdown" id="configPriceBreakdown">
+                    Basispreis + Optionen
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  class="config-input"
+                  id="configName"
+                  placeholder="Name deiner Konfiguration (z.B. 'Mein Ehering')"
+                  maxlength="100"
+                  style="margin-top: 16px"
+                />
+                <div class="config-actions" style="margin-top: 20px">
+                  <button
+                    class="btn btn-primary"
+                    id="btnAddToCart"
+                    disabled
+                    aria-disabled="true"
+                    title="Deaktiviert."
+                  >
+                    <i class="fas fa-shopping-bag"></i> In den Warenkorb
+                  </button>
+                  <button
+                    class="btn btn-cta"
+                    id="btnSaveConfig"
+                    disabled
+                    aria-disabled="true"
+                    title="Deaktiviert."
+                  >
+                    <i class="fas fa-save"></i> Speichern
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="wizard-nav">
+              <button class="btn btn-secondary" id="wizardPrev" disabled>
+                <i class="fas fa-chevron-left"></i> Zurück
+              </button>
+              <button class="btn btn-primary" id="wizardNext">
+                Weiter <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>Exklusiver Schmuck, individuell gestaltet.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Konto</h4>
+            <ul></ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="index.html#features">Überblick</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
