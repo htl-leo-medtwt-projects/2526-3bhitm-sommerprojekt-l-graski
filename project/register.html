@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Anmelden – Oréon</title>
+    <title>Registrieren – Oréon</title>
     <link rel="icon" type="image/png" href="img/logo-def.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,38 +52,75 @@
 
     <div class="auth-page">
       <div class="auth-card">
-        <h1>Anmelden</h1>
-        <p class="auth-subtitle">Willkommen zurück bei Oréon</p>
+        <h1>Registrieren</h1>
+        <p class="auth-subtitle">Erstelle dein Oréon-Konto</p>
 
         <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="regFirstName">Vorname</label>
+              <input
+                type="text"
+                class="form-input"
+                id="regFirstName"
+                placeholder="Max"
+                autocomplete="given-name"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regLastName">Nachname</label>
+              <input
+                type="text"
+                class="form-input"
+                id="regLastName"
+                placeholder="Mustermann"
+                autocomplete="family-name"
+              />
+            </div>
+          </div>
+
           <div class="form-group">
-            <label class="form-label" for="loginEmail">E-Mail</label>
+            <label class="form-label" for="regEmail">E-Mail</label>
             <input
               type="email"
               class="form-input"
-              id="loginEmail"
+              id="regEmail"
               placeholder="deine@email.at"
               autocomplete="email"
             />
           </div>
+
           <div class="form-group">
-            <label class="form-label" for="loginPassword">Passwort</label>
+            <label class="form-label" for="regPassword">Passwort</label>
             <input
               type="password"
               class="form-input"
-              id="loginPassword"
-              placeholder="••••••••"
-              autocomplete="current-password"
+              id="regPassword"
+              placeholder="Mindestens 8 Zeichen"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regPasswordConfirm"
+              >Passwort bestätigen</label
+            >
+            <input
+              type="password"
+              class="form-input"
+              id="regPasswordConfirm"
+              placeholder="Passwort wiederholen"
+              autocomplete="new-password"
             />
           </div>
 
           <button type="button" class="btn btn-primary" style="width: 100%">
-            <i class="fas fa-sign-in-alt"></i> Anmelden
+            <i class="fas fa-user-plus"></i> Registrieren
           </button>
         </form>
 
         <div class="auth-switch">
-          Noch kein Konto? <a href="register.html">Jetzt registrieren</a>
+          Schon ein Konto? <a href="login.html">Zum Login</a>
         </div>
       </div>
     </div>

@@ -135,9 +135,7 @@ h3 {
   z-index: 1000;
   padding: 16px 0;
   background: transparent;
-  transition:
-    padding var(--transition),
-    background var(--transition);
+  transition: none;
 }
 
 .navbar.scrolled {
@@ -239,6 +237,26 @@ h3 {
   color: var(--gold);
 }
 
+.nav-cart {
+  position: relative;
+}
+
+.nav-cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--gold);
+  color: var(--dark-green-deep);
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .nav-icons {
   display: flex;
   gap: 20px;
@@ -248,6 +266,10 @@ h3 {
 .nav-icon {
   color: var(--champagne);
   font-size: 1.2rem;
+}
+
+.nav-icon.active {
+  color: var(--gold);
 }
 
 .nav-icon:hover {
@@ -268,9 +290,7 @@ h3 {
   width: 24px;
   height: 2px;
   background: var(--champagne);
-  transition:
-    transform var(--transition),
-    opacity var(--transition);
+  transition: none;
 }
 
 .nav-toggle.active span:nth-child(1) {
@@ -1073,6 +1093,53 @@ h3 {
   padding: 120px 24px 60px;
 }
 
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--champagne-dark);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(10, 31, 19, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--champagne);
+  font-family: var(--font-main);
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--champagne-dark);
+  opacity: 0.4;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-error {
+  color: var(--error);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
 .auth-card {
   background: rgba(46, 46, 46, 0.25);
   border: 1px solid rgba(201, 168, 76, 0.1);
@@ -1080,6 +1147,32 @@ h3 {
   padding: 48px;
   width: 100%;
   max-width: 460px;
+}
+
+.auth-card h1 {
+  text-align: center;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.auth-card .auth-subtitle {
+  text-align: center;
+  color: var(--champagne-dark);
+  margin-bottom: 32px;
+  opacity: 0.7;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: var(--champagne-dark);
+}
+
+.auth-switch a {
+  color: var(--gold);
+  font-weight: 600;
 }
 
 .cart-page {
