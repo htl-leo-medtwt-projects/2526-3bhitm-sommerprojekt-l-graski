@@ -1,0 +1,137 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produkte – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script defer src="js/api.js" defer></script>
+    <script defer src="js/main.js" defer></script>
+    <script defer src="js/products.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html" class="active">Produkte</a></li>
+          <li><a href="configurator.html">Konfigurator</a></li>
+          <li><a href="account.html">Mein Konto</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="cart.html" class="nav-icon nav-cart" title="Warenkorb">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="nav-cart-count" id="cartCount">0</span>
+          </a>
+          <a href="login.html" class="nav-icon" title="Anmelden">
+            <i class="fas fa-user"></i>
+          </a>
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="page-header">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Startseite</a> / <span>Produkte</span>
+        </div>
+        <h1 class="reveal">Unsere <span class="text-gold">Kollektion</span></h1>
+        <p class="reveal">
+          Entdecke handgefertigten Schmuck, den du nach deinen Wünschen
+          gestalten kannst.
+        </p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar reveal" id="filterBar">
+          <button class="filter-btn active" data-category="all">Alle</button>
+          <button class="filter-btn" data-category="ringe">Ringe</button>
+          <button class="filter-btn" data-category="armbaender">
+            Armbänder
+          </button>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+          <div class="loader"><div class="loader-spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>
+              Exklusiver Schmuck, individuell gestaltet. Dein Unikat, deine
+              Geschichte.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="products.html?category=ringe">Ringe</a></li>
+              <li><a href="products.html?category=armbaender">Armbänder</a></li>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Konto</h4>
+            <ul>
+              <li><a href="account.html">Mein Konto</a></li>
+              <li><a href="cart.html">Warenkorb</a></li>
+              <li><a href="account.html#orders">Bestellungen</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="about.html">Über uns</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+              <li><a href="privacy.html">Datenschutz</a></li>
+              <li><a href="imprint.html">Impressum</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

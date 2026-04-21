@@ -1,0 +1,252 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script defer src="js/api.js" defer></script>
+    <script defer src="js/main.js" defer></script>
+    <script defer src="js/checkout.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html">Produkte</a></li>
+          <li><a href="configurator.html">Konfigurator</a></li>
+          <li><a href="account.html">Mein Konto</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="cart.html" class="nav-icon nav-cart" title="Warenkorb">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="nav-cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="checkout-page">
+      <div class="container">
+        <h1 class="reveal page-title">
+          <span class="text-gold">Checkout</span>
+        </h1>
+
+        <div class="checkout-layout">
+          <form class="checkout-form" id="checkoutForm">
+            <div class="checkout-section reveal-left">
+              <h2><i class="fas fa-truck"></i> Lieferadresse</h2>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="checkFirstName">Vorname</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="checkFirstName"
+                    required
+                    autocomplete="given-name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="checkLastName">Nachname</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="checkLastName"
+                    required
+                    autocomplete="family-name"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="checkStreet"
+                  >Straße & Hausnummer</label
+                >
+                <input
+                  type="text"
+                  class="form-input"
+                  id="checkStreet"
+                  required
+                  autocomplete="street-address"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="checkZip">PLZ</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="checkZip"
+                    required
+                    autocomplete="postal-code"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="checkCity">Ort</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="checkCity"
+                    required
+                    autocomplete="address-level2"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="checkCountry">Land</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="checkCountry"
+                  value="Österreich"
+                  autocomplete="country-name"
+                />
+              </div>
+            </div>
+
+            <div class="checkout-section reveal-left">
+              <h2><i class="fas fa-credit-card"></i> Zahlungsmethode</h2>
+              <div class="payment-options">
+                <label class="payment-option selected">
+                  <input type="radio" name="payment" value="rechnung" checked />
+                  <i class="fas fa-file-invoice"></i>
+                  <div>
+                    <strong class="payment-option-title">Rechnung</strong>
+                    <small class="payment-option-subtitle"
+                      >Zahlung innerhalb von 14 Tagen</small
+                    >
+                  </div>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="kreditkarte" />
+                  <i class="fas fa-credit-card"></i>
+                  <div>
+                    <strong class="payment-option-title">Kreditkarte</strong>
+                    <small class="payment-option-subtitle"
+                      >Visa, Mastercard, Amex</small
+                    >
+                  </div>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="paypal" />
+                  <i class="fab fa-paypal"></i>
+                  <div>
+                    <strong class="payment-option-title">PayPal</strong>
+                    <small class="payment-option-subtitle"
+                      >Schnell und sicher</small
+                    >
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-cta u-w-100"
+              id="placeOrderBtn"
+            >
+              <i class="fas fa-check"></i> Jetzt kaufen
+            </button>
+          </form>
+
+          <div class="cart-summary reveal-right" id="checkoutSummary">
+            <h2>Deine Bestellung</h2>
+            <div id="checkoutItems">
+              <div class="loader"><div class="loader-spinner"></div></div>
+            </div>
+            <div class="summary-row summary-row-spaced">
+              <span class="label">Zwischensumme</span>
+              <span class="value" id="checkSubtotal">€ 0,00</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">Versand</span>
+              <span class="value">Kostenlos</span>
+            </div>
+            <div class="summary-total">
+              <span class="label">Gesamt</span>
+              <span class="value" id="checkTotal">€ 0,00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+      <div class="modal checkout-success-modal">
+        <div class="checkout-success-icon">✅</div>
+        <h2>Bestellung aufgegeben!</h2>
+        <p class="checkout-success-text">Vielen Dank für deine Bestellung.</p>
+        <p class="checkout-success-order">
+          Bestellnummer: <strong class="text-gold" id="orderNumber">-</strong>
+        </p>
+        <a href="account.html" class="btn btn-primary"
+          >Zu meinen Bestellungen</a
+        >
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>Exklusiver Schmuck, individuell gestaltet.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="products.html">Kollektion</a></li>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="about.html">Über uns</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+              <li><a href="privacy.html">Datenschutz</a></li>
+              <li><a href="imprint.html">Impressum</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
