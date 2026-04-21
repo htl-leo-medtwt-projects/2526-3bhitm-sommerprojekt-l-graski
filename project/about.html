@@ -1,0 +1,217 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Über uns – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script defer src="js/api.js" defer></script>
+    <script defer src="js/main.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html">Produkte</a></li>
+          <li><a href="configurator.html">Konfigurator</a></li>
+          <li><a href="account.html">Mein Konto</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="cart.html" class="nav-icon nav-cart" title="Warenkorb">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="nav-cart-count" id="cartCount">0</span>
+          </a>
+          <a href="login.html" class="nav-icon" title="Anmelden">
+            <i class="fas fa-user"></i>
+          </a>
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="page-header">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Startseite</a> / <span>Über uns</span>
+        </div>
+        <h1 class="reveal">Über <span class="text-gold">Oréon</span></h1>
+        <p class="reveal">
+          Unsere Geschichte, unsere Leidenschaft, unser Handwerk.
+        </p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="info-content">
+          <div class="info-block reveal">
+            <h2>Unsere <span class="text-gold">Geschichte</span></h2>
+            <p>
+              Oréon wurde mit einer klaren Vision gegründet: Schmuck zu
+              schaffen, der so einzigartig ist wie die Menschen, die ihn tragen.
+              Was als kleine Werkstatt begann, hat sich zu einer innovativen
+              Plattform entwickelt, die traditionelle Handwerkskunst mit
+              modernster Technologie verbindet.
+            </p>
+            <p>
+              Jedes Schmuckstück bei Oréon ist ein Unikat. Durch unseren
+              einzigartigen 3D-Konfigurator ermöglichen wir es unseren Kunden,
+              ihre Vorstellungen in die Realität umzusetzen – von der Wahl des
+              Materials über die Form bis hin zur persönlichen Gravur.
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Unsere <span class="text-gold">Werte</span></h2>
+            <div class="info-values-grid">
+              <div class="info-value-card">
+                <span class="info-value-icon"><i class="fas fa-gem"></i></span>
+                <h3>Premium-Qualität</h3>
+                <p>
+                  Wir verwenden ausschließlich hochwertige Materialien – von
+                  925er Silber bis 950er Platin. Jedes Stück wird mit größter
+                  Sorgfalt gefertigt.
+                </p>
+              </div>
+              <div class="info-value-card">
+                <span class="info-value-icon"
+                  ><i class="fas fa-fingerprint"></i
+                ></span>
+                <h3>Individualität</h3>
+                <p>
+                  Kein Schmuckstück gleicht dem anderen. Unser Konfigurator
+                  bietet unzählige Kombinationsmöglichkeiten für dein
+                  persönliches Unikat.
+                </p>
+              </div>
+              <div class="info-value-card">
+                <span class="info-value-icon"><i class="fas fa-leaf"></i></span>
+                <h3>Nachhaltigkeit</h3>
+                <p>
+                  Wir setzen auf nachhaltige Materialien und verantwortungsvolle
+                  Beschaffung. Qualität statt Quantität – für die Ewigkeit
+                  gemacht.
+                </p>
+              </div>
+              <div class="info-value-card">
+                <span class="info-value-icon"
+                  ><i class="fas fa-heart"></i
+                ></span>
+                <h3>Leidenschaft</h3>
+                <p>
+                  Hinter jedem Entwurf steckt echte Leidenschaft für Design und
+                  Handwerkskunst. Wir lieben, was wir tun.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Unser <span class="text-gold">Handwerk</span></h2>
+            <p>
+              Bei Oréon trifft traditionelle Goldschmiedekunst auf digitale
+              Innovation. Unser Team besteht aus erfahrenen Schmuckdesignern und
+              Technologie-Experten, die gemeinsam daran arbeiten, das
+              bestmögliche Erlebnis für unsere Kunden zu schaffen.
+            </p>
+            <p>
+              Von der ersten Skizze bis zum fertigen Schmuckstück durchläuft
+              jede Kreation strenge Qualitätskontrollen. Wir sind erst
+              zufrieden, wenn du es bist.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="text-center reveal">
+          <h2 class="section-cta-title">Bereit, dein Unikat zu gestalten?</h2>
+          <p class="section-cta-text">
+            Starte jetzt den Konfigurator und erschaffe dein persönliches
+            Schmuckstück.
+          </p>
+          <a href="configurator.html" class="btn btn-cta"
+            >Konfigurator starten</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>
+              Exklusiver Schmuck, individuell gestaltet. Dein Unikat, deine
+              Geschichte.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="products.html?category=ringe">Ringe</a></li>
+              <li><a href="products.html?category=armbaender">Armbänder</a></li>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Konto</h4>
+            <ul>
+              <li><a href="account.html">Mein Konto</a></li>
+              <li><a href="cart.html">Warenkorb</a></li>
+              <li><a href="account.html#orders">Bestellungen</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="about.html">Über uns</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+              <li><a href="privacy.html">Datenschutz</a></li>
+              <li><a href="imprint.html">Impressum</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

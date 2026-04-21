@@ -1,0 +1,225 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressum – Oréon</title>
+    <link rel="icon" type="image/png" href="img/logo-def.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+    <nav class="navbar scrolled" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-logo">
+          <img src="img/logo-def-name.png" class="logo-full" alt="Oréon" />
+          <img src="img/logo-def.png" class="logo-icon" alt="Oréon" />
+          <span class="logo-text">Oréon</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html">Produkte</a></li>
+          <li><a href="configurator.html">Konfigurator</a></li>
+          <li><a href="account.html">Mein Konto</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="cart.html" class="nav-icon nav-cart" title="Warenkorb">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="nav-cart-count" id="cartCount">0</span>
+          </a>
+          <a href="login.html" class="nav-icon" title="Anmelden">
+            <i class="fas fa-user"></i>
+          </a>
+          <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="page-header">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Startseite</a> / <span>Impressum</span>
+        </div>
+        <h1 class="reveal"><span class="text-gold">Impressum</span></h1>
+        <p class="reveal">Angaben gemäß § 5 ECG und § 25 MedienG.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="info-content legal-content">
+          <div class="info-block reveal">
+            <h2>Angaben zum Unternehmen</h2>
+            <p>
+              <strong>Oréon GmbH</strong><br />
+              Limesstraße 12<br />
+              4060 Leonding, Österreich
+            </p>
+            <p>
+              <strong>Unternehmensgegenstand:</strong> Online-Vertrieb von
+              individuell konfigurierbarem Schmuck<br />
+              <strong>UID-Nr.:</strong> ATU12345678<br />
+              <strong>Firmenbuchnummer:</strong> FN 123456a<br />
+              <strong>Firmenbuchgericht:</strong> Landesgericht Linz
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Kontakt</h2>
+            <p>
+              <strong>Telefon:</strong> +43 732 123 456<br />
+              <strong>E-Mail:</strong> info@oreon-schmuck.at<br />
+              <strong>Website:</strong> www.oreon-schmuck.at
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Geschäftsführung</h2>
+            <p>Max Mustermann</p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Aufsichtsbehörde</h2>
+            <p>Bezirkshauptmannschaft Linz-Land</p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Mitgliedschaft</h2>
+            <p>
+              Wirtschaftskammer Oberösterreich<br />
+              Fachgruppe: Handelsagenten
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Anwendbare Rechtsvorschriften</h2>
+            <p>
+              Gewerbeordnung (GewO), E-Commerce-Gesetz (ECG), Mediengesetz
+              (MedienG)
+            </p>
+            <p>
+              Nachzulesen unter:
+              <a
+                href="https://www.ris.bka.gv.at"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-link-gold"
+                >ris.bka.gv.at</a
+              >
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Online-Streitbeilegung</h2>
+            <p>
+              Verbraucher haben die Möglichkeit, Beschwerden an die
+              Online-Streitbeilegungsplattform der EU zu richten:
+              <a
+                href="https://ec.europa.eu/consumers/odr"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-link-gold"
+                >ec.europa.eu/consumers/odr</a
+              >
+            </p>
+            <p>Unsere E-Mail-Adresse für Beschwerden: info@oreon-schmuck.at</p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Haftungsausschluss</h2>
+            <p>
+              Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine
+              Haftung für die Inhalte externer Links. Für den Inhalt der
+              verlinkten Seiten sind ausschließlich deren Betreiber
+              verantwortlich. Alle auf dieser Website veröffentlichten Inhalte
+              sind urheberrechtlich geschützt. Jede Verwertung ohne Zustimmung
+              ist unzulässig.
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <h2>Urheberrecht</h2>
+            <p>
+              Die durch den Seitenbetreiber erstellten Inhalte und Werke auf
+              diesen Seiten unterliegen dem österreichischen Urheberrecht.
+              Vervielfältigung, Bearbeitung, Verbreitung und jede Art der
+              Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der
+              schriftlichen Zustimmung der Oréon GmbH.
+            </p>
+          </div>
+
+          <div class="info-block reveal">
+            <p class="legal-note">Stand: März 2026</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="index.html" class="nav-logo">Oréon</a>
+            <p>
+              Exklusiver Schmuck, individuell gestaltet. Dein Unikat, deine
+              Geschichte.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Shop</h4>
+            <ul>
+              <li><a href="products.html?category=ringe">Ringe</a></li>
+              <li><a href="products.html?category=armbaender">Armbänder</a></li>
+              <li><a href="configurator.html">Konfigurator</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Konto</h4>
+            <ul>
+              <li><a href="account.html">Mein Konto</a></li>
+              <li><a href="cart.html">Warenkorb</a></li>
+              <li><a href="account.html#orders">Bestellungen</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Info</h4>
+            <ul>
+              <li><a href="about.html">Über uns</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+              <li><a href="privacy.html">Datenschutz</a></li>
+              <li><a href="imprint.html">Impressum</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          &copy; 2026 Oréon. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
