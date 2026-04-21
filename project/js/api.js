@@ -181,8 +181,8 @@ const OreonAPI = {
                 if (action === 'login') {
                     const email = body?.email;
                     const password = body?.password;
-                    if (email === 'admin' && password === 'admin') {
-                        const adminUser = { id: 0, email: 'admin', first_name: 'Admin', last_name: '' };
+                    if (email === 'admin@admin' && password === 'admin') {
+                        const adminUser = { id: 0, email: 'admin@admin', first_name: 'Admin', last_name: '' };
                         return { user: adminUser };
                     }
 
