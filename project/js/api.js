@@ -1,11 +1,7 @@
-/**
- * Oréon API Helper
- * Zentraler API-Client für alle Backend-Aufrufe
- */
+
 const API_BASE = 'api';
 
 const OreonAPI = {
-    // --- Produkte ---
     async getProducts(category = '') {
         const params = category ? `?action=list&category=${encodeURIComponent(category)}` : '?action=list';
         return this._fetch(`${API_BASE}/products.php${params}`);
@@ -23,7 +19,6 @@ const OreonAPI = {
         return this._fetch(`${API_BASE}/products.php?action=options&category_id=${categoryId}`);
     },
 
-    // --- Auth ---
     async login(email, password) {
         return this._fetch(`${API_BASE}/auth.php?action=login`, {
             method: 'POST',
@@ -59,7 +54,6 @@ const OreonAPI = {
         });
     },
 
-    // --- Konfigurationen ---
     async saveConfiguration(data) {
         return this._fetch(`${API_BASE}/configurations.php?action=save`, {
             method: 'POST',
@@ -82,7 +76,6 @@ const OreonAPI = {
         });
     },
 
-    // --- Warenkorb ---
     async addToCart(productId, configurationId = null, quantity = 1, configurationSnapshot = null, unitPrice = null) {
         const body = { product_id: productId, configuration_id: configurationId, quantity };
         if (configurationSnapshot) body.configuration_snapshot = configurationSnapshot;
@@ -116,7 +109,6 @@ const OreonAPI = {
         return this._fetch(`${API_BASE}/cart.php?action=count`);
     },
 
-    // --- Bestellungen ---
     async createOrder(data) {
         return this._fetch(`${API_BASE}/orders.php?action=create`, {
             method: 'POST',
@@ -132,24 +124,190 @@ const OreonAPI = {
         return this._fetch(`${API_BASE}/orders.php?action=detail&id=${id}`);
     },
 
-    // --- Helper ---
     async _fetch(url, options = {}) {
-        const defaults = {
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'same-origin'
+        const getBody = () => {
+            if (!options || !options.body) return null;
+            try {
+                return JSON.parse(options.body);
+            } catch (err) {
+                return null;
+            }
         };
-        const config = { ...defaults, ...options, headers: { ...defaults.headers, ...(options.headers || {}) } };
-        const response = await fetch(url, config);
-        const data = await response.json();
-        if (!response.ok) {
-            throw { status: response.status, ...data };
+
+        const body = getBody();
+        try {
+            // =====KI=====
+            if (url.includes('products.php')) {
+                const actionMatch = url.match(/action=([^&]+)/);
+                const action = actionMatch ? actionMatch[1] : 'list';
+
+                if (action === 'list') {
+                    return { products: (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [] };
+                }
+
+                if (action === 'detail') {
+                    const slugMatch = url.match(/slug=([^&]+)/);
+                    const slug = slugMatch ? decodeURIComponent(slugMatch[1]) : null;
+                    const list = (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [];
+                    const product = list.find(p => p.slug === slug) || null;
+                    return { product };
+                }
+                // ============
+
+                if (action === 'categories') {
+                    const list = (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [];
+                    const categories = [];
+                    list.forEach(p => {
+                        if (!categories.find(c => c.slug === p.category_slug)) {
+                            categories.push({ id: p.category_id, name: p.category_name, slug: p.category_slug });
+                        }
+                    });
+                    return { categories };
+                }
+
+                if (action === 'options') {
+                    if (typeof PLACEHOLDER_OPTIONS !== 'undefined') {
+                        return { options: PLACEHOLDER_OPTIONS };
+                    }
+                    return { options: {} };
+                }
+            }
+
+            // =====KI=====
+            if (url.includes('auth.php')) {
+                const actionMatch = url.match(/action=([^&]+)/);
+                const action = actionMatch ? actionMatch[1] : null;
+
+                if (action === 'login') {
+                    const email = body?.email;
+                    const password = body?.password;
+                    if (email === 'admin' && password === 'admin') {
+                        const adminUser = { id: 0, email: 'admin', first_name: 'Admin', last_name: '' };
+                        return { user: adminUser };
+                    }
+
+                    const demoUsers = JSON.parse(localStorage.getItem('oreon_users') || '[]');
+                    const found = demoUsers.find(u => u.email === email && u.password === password);
+                    if (found) return { user: { id: found.id, email: found.email, first_name: found.first_name, last_name: found.last_name } };
+                    throw { status: 401, error: 'Ungültige Anmeldedaten.' };
+                }
+
+                if (action === 'register') {
+                    const users = JSON.parse(localStorage.getItem('oreon_users') || '[]');
+                    const newUser = { id: Date.now(), first_name: body.first_name, last_name: body.last_name, email: body.email, password: body.password };
+                    users.push(newUser);
+                    localStorage.setItem('oreon_users', JSON.stringify(users));
+                    return { user: { id: newUser.id, email: newUser.email, first_name: newUser.first_name, last_name: newUser.last_name } };
+                }
+                // ============
+
+                if (action === 'logout') {
+                    return { success: true };
+                }
+
+                if (action === 'me') {
+                    const me = LocalStore.getUser();
+                    return { user: me };
+                }
+
+                if (action === 'update') {
+                    const updated = body;
+                    LocalStore.setUser(updated);
+                    return { user: updated };
+                }
+
+                if (action === 'delete') {
+                    LocalStore.clearUser();
+                    return { success: true };
+                }
+            }
+
+            // =====KI=====
+            if (url.includes('configurations.php')) {
+                const actionMatch = url.match(/action=([^&]+)/);
+                const action = actionMatch ? actionMatch[1] : null;
+
+                if (action === 'save') {
+                    const saved = LocalStore.saveConfiguration(body);
+                    return { configuration: saved };
+                }
+
+                if (action === 'list') {
+                    return { configurations: LocalStore.getConfigurations() };
+                }
+
+                if (action === 'detail') {
+                    const idMatch = url.match(/id=([^&]+)/);
+                    const id = idMatch ? parseInt(idMatch[1], 10) : null;
+                    const configs = LocalStore.getConfigurations();
+                    return { configuration: configs.find(c => c.id === id) || null };
+                }
+
+                if (action === 'delete') {
+                    LocalStore.deleteConfiguration(body.id);
+                    return { success: true };
+                }
+            }
+
+            if (url.includes('cart.php')) {
+                const actionMatch = url.match(/action=([^&]+)/);
+                const action = actionMatch ? actionMatch[1] : null;
+
+                if (action === 'add') {
+                    const item = body;
+                    const added = LocalStore.addToCart(item);
+                    return { cart: added };
+                }
+
+                if (action === 'list') {
+                    return { cart: LocalStore.getCart() };
+                }
+
+                if (action === 'update') {
+                    LocalStore.updateCartQuantity(body.id, body.quantity);
+                    return { cart: LocalStore.getCart() };
+                }
+
+                if (action === 'remove') {
+                    LocalStore.removeFromCart(body.id);
+                    return { cart: LocalStore.getCart() };
+                }
+
+                if (action === 'count') {
+                    return { count: LocalStore.getCartCount() };
+                }
+            }
+            // ============
+
+            if (url.includes('orders.php')) {
+                const actionMatch = url.match(/action=([^&]+)/);
+                const action = actionMatch ? actionMatch[1] : null;
+
+                if (action === 'create') {
+                    const order = LocalStore.addOrder(body);
+                    return { order };
+                }
+
+                if (action === 'list') {
+                    return { orders: LocalStore.getOrders() };
+                }
+
+                if (action === 'detail') {
+                    const idMatch = url.match(/id=([^&]+)/);
+                    const id = idMatch ? parseInt(idMatch[1], 10) : null;
+                    const order = LocalStore.getOrders().find(o => o.id === id) || null;
+                    return { order };
+                }
+            }
+
+            return {};
+        } catch (err) {
+            throw { status: err.status || 500, error: err.error || String(err) };
         }
-        return data;
     }
 };
 
-// KI GENERIERT: LocalStorage-Fallback (Demo/Offline-Funktionalität ohne Backend)
-// --- Local Storage Helpers (Fallback wenn kein Backend) ---
+// =====KI=====
 const LocalStore = {
     getUser() {
         const data = localStorage.getItem('oreon_user');
@@ -165,7 +323,6 @@ const LocalStore = {
         return !!this.getUser();
     },
 
-    // Cart in localStorage
     getCart() {
         const data = localStorage.getItem('oreon_cart');
         return data ? JSON.parse(data) : [];
@@ -181,7 +338,7 @@ const LocalStore = {
         return cart;
     },
     removeFromCart(id) {
-        const cart = this.getCart().filter(i => i.id !== id);
+        const cart = this.getCart().filter(item => item.id !== id);
         this.setCart(cart);
         return cart;
     },
@@ -196,10 +353,9 @@ const LocalStore = {
         this.setCart([]);
     },
     getCartCount() {
-        return this.getCart().reduce((s, i) => s + (i.quantity || 1), 0);
+        return this.getCart().reduce((sum, item) => sum + (item.quantity || 1), 0);
     },
 
-    // Configurations in localStorage
     getConfigurations() {
         const data = localStorage.getItem('oreon_configs');
         return data ? JSON.parse(data) : [];
@@ -234,6 +390,7 @@ const LocalStore = {
         return order;
     }
 };
+// ============
 
 async function updateCartBadge() {
     let count = LocalStore.getCartCount();
@@ -244,17 +401,18 @@ async function updateCartBadge() {
             if (typeof data?.count === 'number') {
                 count = data.count;
             }
-        } catch (e) {
-            // fallback to localStorage count
+        } catch (err) {
         }
     }
 
-    document.querySelectorAll('#cartCount').forEach(el => {
-        el.textContent = count;
-        el.style.display = count > 0 ? 'flex' : 'none';
+    document.querySelectorAll('#cartCount').forEach(element => {
+        element.textContent = count;
+        element.style.display = count > 0 ? 'flex' : 'none';
     });
 }
 
+// =====KI=====
 function formatPrice(price) {
     return '€ ' + parseFloat(price).toFixed(2).replace('.', ',');
 }
+// ============

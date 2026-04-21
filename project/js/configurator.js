@@ -1,9 +1,3 @@
-/**
- * Oréon – Konfigurator JS
- * Step-Wizard + Babylon.js 3D-Ansicht + Live-Preis
- */
-
-// ========== State ==========
 const ConfigState = {
     product: null,
     categoryId: null,
@@ -22,10 +16,9 @@ const ConfigState = {
     babylonEngine: null,
     meshes: {},
     currentStep: 0,
-    totalSteps: 6 // 0-5
+    totalSteps: 6
 };
 
-// ========== Placeholder Options ==========
 const PLACEHOLDER_OPTIONS = {
     ringe: {
         types: [
@@ -91,19 +84,17 @@ const PLACEHOLDER_OPTIONS = {
     ]
 };
 
-// ========== Init ==========
 document.addEventListener('DOMContentLoaded', () => {
     initConfigCategoryFilter();
     loadConfigProducts('ringe');
     initConfiguratorButtons();
     initWizardNav();
 
-    // Check URL params
     const productSlug = getUrlParam('product');
     const configId = getUrlParam('config');
 
     if (productSlug) {
-        const product = PLACEHOLDER_PRODUCTS.find(p => p.slug === productSlug);
+        const product = PLACEHOLDER_PRODUCTS.find(item => item.slug === productSlug);
         if (product) {
             selectProduct(product);
         }
@@ -112,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ========== Wizard Navigation ==========
 function initWizardNav() {
     const prevBtn = document.getElementById('wizardPrev');
     const nextBtn = document.getElementById('wizardNext');
@@ -129,7 +119,6 @@ function initWizardNav() {
         }
     });
 
-    // Click on dots to navigate
     document.querySelectorAll('.wizard-step-dot[data-step]').forEach(dot => {
         dot.addEventListener('click', () => {
             const step = parseInt(dot.dataset.step);
@@ -141,7 +130,6 @@ function initWizardNav() {
 }
 
 function getMaxReachableStep() {
-    // Allow going to any step they've already passed, or next one
     const selectedOptions = ConfigState.selected;
     let max = 0;
     if (selectedOptions.type) max = 1;
@@ -156,7 +144,6 @@ function goToStep(step) {
     const previousStepIndex = ConfigState.currentStep;
     ConfigState.currentStep = step;
 
-    // Update step content visibility
     document.querySelectorAll('.wizard-step-content').forEach(el => {
         el.classList.remove('active');
     });
@@ -175,7 +162,6 @@ function goToStep(step) {
         // ============
     }
 
-    // Update dots
     document.querySelectorAll('.wizard-step-dot').forEach(dot => {
         const dotStepIndex = parseInt(dot.dataset.step);
         dot.classList.remove('active', 'done');
@@ -183,13 +169,11 @@ function goToStep(step) {
         else if (dotStepIndex < step) dot.classList.add('done');
     });
 
-    // Update lines
     const lines = document.querySelectorAll('.wizard-step-line');
     lines.forEach((line, i) => {
         line.classList.toggle('done', i < step);
     });
 
-    // Update nav buttons
     const prevBtn = document.getElementById('wizardPrev');
     const nextBtn = document.getElementById('wizardNext');
     if (prevBtn) prevBtn.disabled = step === 0;
@@ -201,18 +185,15 @@ function goToStep(step) {
         }
     }
 
-    // Build summary on last step
     if (step === 5) {
         buildSummary();
     }
 
-    // Resize babylon engine to match new layout
     if (ConfigState.babylonEngine) {
         setTimeout(() => ConfigState.babylonEngine.resize(), 50);
     }
 }
 
-// ========== Category Filter ==========
 function initConfigCategoryFilter() {
     const filter = document.getElementById('configCategoryFilter');
     if (!filter) return;
@@ -275,7 +256,6 @@ function loadConfigProducts(category) {
     // ============
 }
 
-// ========== Select Product ==========
 function selectProduct(product) {
     if (!product) return;
 
@@ -285,30 +265,22 @@ function selectProduct(product) {
     ConfigState.categoryId = product.category_id;
     ConfigState.currentStep = 0;
 
-    // Reset selections
     ConfigState.selected = { type: null, material: null, size: null, shape: null, engraving: null, engravingText: '' };
 
-    // Show configurator, hide selection + page header
     document.getElementById('productSelection')?.classList.add('hidden');
     const pageHeader = document.querySelector('.page-header');
     if (pageHeader) pageHeader.style.display = 'none';
     document.getElementById('configuratorSection')?.classList.remove('hidden');
     document.getElementById('configProductName').textContent = product.name;
-    // Hide the navbar when in wizard mode
     document.getElementById('navbar')?.classList.add('hidden');
-    // Hide footer
     document.querySelector('.footer')?.classList.add('hidden');
 
-    // Load options
     loadOptions();
 
-    // Init wizard to step 0
     goToStep(0);
 
-    // Init 3D
     initBabylonScene();
 
-    // Update initial price
     updatePrice();
 
     // =====KI=====
@@ -321,7 +293,6 @@ function selectProduct(product) {
     // ============
 }
 
-// ========== Load Options ==========
 function loadOptions() {
     const cat = ConfigState.categorySlug;
     const catOpts = PLACEHOLDER_OPTIONS[cat] || PLACEHOLDER_OPTIONS.ringe;
@@ -340,33 +311,27 @@ function loadOptions() {
 function renderOptions() {
     const opts = ConfigState.options;
 
-    // Types
     renderOptionGroup('configTypes', opts.types, 'type', (t) =>
         `${t.name}<span class="price-mod">${t.price_modifier > 0 ? '+' + formatPrice(t.price_modifier) : 'inkl.'}</span>`
     );
 
-    // Materials
     renderOptionGroup('configMaterials', opts.materials, 'material', (m) =>
         `<div class="material-swatch"><span class="swatch-circle" data-color="${escapeHtml(m.color_hex)}"></span>${m.name}</div><span class="price-mod">${m.price_modifier > 0 ? '+' + formatPrice(m.price_modifier) : 'inkl.'}</span>`
     );
     applyMaterialSwatches();
 
-    // Sizes
     renderOptionGroup('configSizes', opts.sizes, 'size', (s) =>
         `${s.label}<span class="price-mod">${s.price_modifier > 0 ? '+' + formatPrice(s.price_modifier) : 'inkl.'}</span>`
     );
 
-    // Shapes
     renderOptionGroup('configShapes', opts.shapes, 'shape', (sh) =>
         `${sh.name}<span class="price-mod">${sh.price_modifier > 0 ? '+' + formatPrice(sh.price_modifier) : 'inkl.'}</span>`
     );
 
-    // Engravings
-    renderOptionGroup('configEngravings', opts.engravings, 'engraving', (e) =>
-        `${e.name}<span class="price-mod">ab ${formatPrice(e.base_price)}</span>`
+    renderOptionGroup('configEngravings', opts.engravings, 'engraving', (engraving) =>
+        `${engraving.name}<span class="price-mod">ab ${formatPrice(engraving.base_price)}</span>`
     );
 
-    // Engraving text input
     const engInput = document.getElementById('engravingText');
     if (engInput) {
         engInput.addEventListener('input', () => {
@@ -395,14 +360,12 @@ function renderOptionGroup(containerId, options, stateKey, renderFn) {
 
     container.querySelectorAll('.config-option').forEach(el => {
         el.addEventListener('click', () => {
-            // Deselect  siblings
             container.querySelectorAll('.config-option').forEach(s => s.classList.remove('selected'));
             el.classList.add('selected');
 
             const id = parseInt(el.dataset.id);
             ConfigState.selected[stateKey] = options.find(o => o.id === id);
 
-            // Engraving special: enable/disable text input
             if (stateKey === 'engraving') {
                 const engInput = document.getElementById('engravingText');
                 if (engInput) {
@@ -434,7 +397,6 @@ function updateCharCount() {
     }
 }
 
-// ========== Price Calculation ==========
 function updatePrice() {
     const selectedOptions = ConfigState.selected;
     let total = ConfigState.basePrice;
@@ -451,7 +413,6 @@ function updatePrice() {
 
     const formatted = formatPrice(total);
 
-    // Update top-bar compact price
     const topPrice = document.getElementById('configTotalPrice');
     if (topPrice) {
         topPrice.textContent = formatted;
@@ -462,11 +423,9 @@ function updatePrice() {
         }
     }
 
-    // Update summary final price
     const finalPrice = document.getElementById('configTotalPriceFinal');
     if (finalPrice) finalPrice.textContent = formatted;
 
-    // Update breakdown
     const breakdownEl = document.getElementById('configPriceBreakdown');
     if (breakdownEl) {
         const parts = [`Basis: ${formatPrice(ConfigState.basePrice)}`];
@@ -484,7 +443,6 @@ function updatePrice() {
     return total;
 }
 
-// ========== Summary ==========
 function buildSummary() {
     const el = document.getElementById('wizardSummary');
     if (!el) return;
@@ -522,9 +480,7 @@ function buildSummary() {
     // ============
 }
 
-// ========== Configurator Buttons ==========
 function initConfiguratorButtons() {
-    // Back button
     document.getElementById('backToProducts')?.addEventListener('click', () => {
         document.getElementById('configuratorSection')?.classList.add('hidden');
         document.getElementById('productSelection')?.classList.remove('hidden');
@@ -536,7 +492,6 @@ function initConfiguratorButtons() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Add to cart
     document.getElementById('btnAddToCart')?.addEventListener('click', () => {
         if (!ConfigState.product) return;
         if (!ConfigState.selected.type || !ConfigState.selected.material || !ConfigState.selected.size || !ConfigState.selected.shape) {
@@ -560,7 +515,6 @@ function initConfiguratorButtons() {
             engraving_text: selectedOptions.engravingText
         };
 
-        // API-first: DB-Warenkorb
         if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
             (async () => {
                 try {
@@ -580,7 +534,7 @@ function initConfiguratorButtons() {
                     );
                     showToast('In den Warenkorb gelegt!', 'success');
                     updateCartBadge();
-                } catch (e) {
+                } catch (err) {
                     LocalStore.addToCart(cartItem);
                     showToast('In den Warenkorb gelegt!', 'success');
                 }
@@ -601,7 +555,6 @@ function initConfiguratorButtons() {
         // ============
     });
 
-    // Save configuration
     document.getElementById('btnSaveConfig')?.addEventListener('click', () => {
         if (!LocalStore.isLoggedIn()) {
             showToast('Bitte melde dich an, um Konfigurationen zu speichern.', 'error');
@@ -640,7 +593,7 @@ function initConfiguratorButtons() {
                 try {
                     await OreonAPI.saveConfiguration(payload);
                     showToast('Konfiguration gespeichert!', 'success');
-                } catch (e) {
+                } catch (err) {
                     LocalStore.saveConfiguration(payload);
                     showToast('Konfiguration gespeichert!', 'success');
                 }
@@ -662,7 +615,6 @@ function initConfiguratorButtons() {
     });
 }
 
-// ========== Load Saved Configuration ==========
 async function loadSavedConfiguration(configId) {
     let config = null;
 
@@ -670,7 +622,7 @@ async function loadSavedConfiguration(configId) {
         try {
             const data = await OreonAPI.getConfiguration(configId);
             config = data.configuration;
-        } catch (e) {
+        } catch (err) {
             config = null;
         }
     }
@@ -682,12 +634,11 @@ async function loadSavedConfiguration(configId) {
 
     if (!config) return;
 
-    const product = PLACEHOLDER_PRODUCTS.find(p => p.id === config.product_id);
+    const product = PLACEHOLDER_PRODUCTS.find(productItem => productItem.id === config.product_id);
     if (!product) return;
 
     selectProduct(product);
 
-    // Wait for options to render, then select them
     setTimeout(() => {
         if (config.type_id) selectOptionById('type', config.type_id);
         if (config.material_id) selectOptionById('material', config.material_id);
@@ -792,7 +743,7 @@ function initBabylonScene() {
 
 function createJewelryMesh(scene) {
     // Remove existing meshes
-    Object.values(ConfigState.meshes).forEach(m => m.dispose());
+    Object.values(ConfigState.meshes).forEach(mesh => mesh.dispose());
     ConfigState.meshes = {};
 
     const isRing = ConfigState.categorySlug === 'ringe';

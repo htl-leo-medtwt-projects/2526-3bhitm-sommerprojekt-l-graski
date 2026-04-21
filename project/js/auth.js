@@ -1,9 +1,4 @@
-/**
- * Oréon – Auth JS
- * Login & Registration
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // If already logged in, redirect
     if (LocalStore.isLoggedIn()) {
         window.location.href = 'account.html';
         return;
@@ -65,7 +60,6 @@ function initLoginForm() {
             showToast('Erfolgreich angemeldet!', 'success');
             setTimeout(() => window.location.href = 'account.html', 500);
         } catch (err) {
-            // Local demo login
             const demoUsers = JSON.parse(localStorage.getItem('oreon_users') || '[]');
             const user = demoUsers.find(u => u.email === email && u.password === password);
             if (user) {
@@ -107,13 +101,13 @@ function initRegisterForm() {
             return;
         }
 
+        // =====KI=====
         try {
             const data = await OreonAPI.register({ first_name: firstName, last_name: lastName, email, password });
             LocalStore.setUser(data.user);
             showToast('Konto erstellt!', 'success');
             setTimeout(() => window.location.href = 'account.html', 500);
         } catch (err) {
-            // Local demo register
             const demoUsers = JSON.parse(localStorage.getItem('oreon_users') || '[]');
             if (demoUsers.find(u => u.email === email)) {
                 errorEl.textContent = 'Diese E-Mail ist bereits registriert.';
@@ -126,5 +120,6 @@ function initRegisterForm() {
             showToast('Konto erstellt!', 'success');
             setTimeout(() => window.location.href = 'account.html', 500);
         }
+        // ============
     });
 }

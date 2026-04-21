@@ -1,7 +1,3 @@
-/**
- * Oréon – Account JS
- * User account page: configurations, orders, profile
- */
 document.addEventListener('DOMContentLoaded', () => {
     if (!LocalStore.isLoggedIn()) {
         window.location.href = 'login.html';
@@ -14,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadProfile();
     initDeleteAccount();
 
-    // Check hash
     if (window.location.hash === '#orders') {
         switchSection('orders');
     }
@@ -32,8 +27,8 @@ function initDeleteAccount() {
             if (typeof OreonAPI !== 'undefined') {
                 await OreonAPI.deleteAccount();
             }
-        } catch (e) {
-            showToast(e?.error || 'Account löschen fehlgeschlagen', 'error');
+        } catch (err) {
+            showToast(err?.error || 'Account löschen fehlgeschlagen', 'error');
             return;
         }
 
@@ -54,8 +49,7 @@ function initAccountNav() {
                         if (typeof OreonAPI !== 'undefined') {
                             await OreonAPI.logout();
                         }
-                    } catch (e) {
-                        // ignore
+                    } catch (err) {
                     } finally {
                         LocalStore.clearUser();
                         showToast('Abgemeldet', 'info');
@@ -70,11 +64,9 @@ function initAccountNav() {
 }
 
 function switchSection(section) {
-    // Update nav
     document.querySelectorAll('.account-nav-item').forEach(n => n.classList.remove('active'));
     document.querySelector(`.account-nav-item[data-section="${section}"]`)?.classList.add('active');
 
-    // Show/hide sections
     ['configurations', 'orders', 'profile'].forEach(s => {
         const el = document.getElementById(`section-${s}`);
         if (el) {
@@ -99,7 +91,7 @@ async function loadConfigurations() {
         try {
             const data = await OreonAPI.getConfigurations();
             configs = data.configurations || [];
-        } catch (e) {
+        } catch (err) {
             configs = LocalStore.getConfigurations();
         }
     } else {
@@ -179,7 +171,7 @@ function addConfigToCart(configId) {
             try {
                 const data = await OreonAPI.getConfiguration(configId);
                 config = data.configuration;
-            } catch (e) {
+            } catch (err) {
                 config = null;
             }
         }
@@ -197,8 +189,7 @@ function addConfigToCart(configId) {
                 showToast('In den Warenkorb gelegt!', 'success');
                 updateCartBadge();
                 return;
-            } catch (e) {
-                // fallback
+            } catch (err) {
             }
         }
 
@@ -227,8 +218,7 @@ function deleteConfig(configId) {
                 showToast('Konfiguration gelöscht', 'info');
                 await loadConfigurations();
                 return;
-            } catch (e) {
-                // fallback
+            } catch (err) {
             }
         }
 
@@ -247,7 +237,7 @@ async function loadOrders() {
         try {
             const data = await OreonAPI.getOrders();
             orders = data.orders || [];
-        } catch (e) {
+        } catch (err) {
             orders = LocalStore.getOrders();
         }
     } else {
@@ -300,8 +290,7 @@ async function loadProfile() {
                 user = data.user;
                 LocalStore.setUser(user);
             }
-        } catch (e) {
-            // keep local user
+        } catch (err) {
         }
     }
 
@@ -342,8 +331,7 @@ async function loadProfile() {
                 if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
                     try {
                         await OreonAPI.updateProfile(updatedUser);
-                    } catch (e) {
-                        // fallback to local only
+                    } catch (err) {
                     }
                 }
 

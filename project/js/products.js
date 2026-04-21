@@ -1,10 +1,4 @@
-/**
- * Oréon – Products Page JS
- * Product listing, filtering, card rendering
- */
-
 // KI GENERIERT: Placeholder-Produktdaten (Fallback wenn API nicht verfügbar)
-// Placeholder product data (used when API is not available)
 const PLACEHOLDER_PRODUCTS = [
     {
         id: 1, category_id: 1, name: 'Eternal Band', slug: 'eternal-band',
@@ -54,20 +48,27 @@ const CATEGORY_ICONS = {
 };
 
 function createProductCard(product) {
-    const icon = CATEGORY_ICONS[product.category_slug] || 'fa-gem';
-    const imgHtml = product.image_url
-        ? `<img src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}">`
-        : `<span class="placeholder-icon"><i class="fas ${icon}"></i></span>`;
+    const iconClass = CATEGORY_ICONS[product.category_slug] || 'fa-gem';
+    const safeImageUrl = product.image_url ? escapeHtml(product.image_url) : '';
+    const safeName = escapeHtml(product.name || '');
+    const safeDescription = escapeHtml(product.description || '');
+    const safeCategoryName = escapeHtml(product.category_name || '');
+    const safeSlug = escapeHtml(product.slug || '');
+    const safeCategory = escapeHtml(product.category_slug || '');
+
+    const imgHtml = safeImageUrl
+        ? `<img src="${safeImageUrl}" alt="${safeName}">`
+        : `<span class="placeholder-icon"><i class="fas ${iconClass}"></i></span>`;
 
     return `
-        <div class="product-card" data-slug="${escapeHtml(product.slug)}" data-category="${escapeHtml(product.category_slug)}" role="button" tabindex="0">
+        <div class="product-card" data-slug="${safeSlug}" data-category="${safeCategory}" role="button" tabindex="0">
             <div class="product-card-img">
                 ${imgHtml}
             </div>
             <div class="product-card-body">
-                <div class="product-card-category">${escapeHtml(product.category_name)}</div>
-                <h3 class="product-card-title">${escapeHtml(product.name)}</h3>
-                <p class="product-card-desc">${escapeHtml(product.description)}</p>
+                <div class="product-card-category">${safeCategoryName}</div>
+                <h3 class="product-card-title">${safeName}</h3>
+                <p class="product-card-desc">${safeDescription}</p>
                 <div class="product-card-footer">
                     <span class="product-price"><small>ab</small><span class="product-price-value">${formatPrice(product.base_price)}</span></span>
                     <span class="btn btn-secondary btn-sm">Konfigurieren</span>
@@ -78,7 +79,7 @@ function createProductCard(product) {
 }
 
 function getPlaceholderProducts() {
-    return PLACEHOLDER_PRODUCTS.map(p => createProductCard(p)).join('');
+    return PLACEHOLDER_PRODUCTS.map(product => createProductCard(product)).join('');
 }
 
 function goToConfigurator(slug) {
@@ -105,7 +106,6 @@ function bindProductCardLinks(container) {
     });
 }
 
-// ========== Products Page Init ==========
 async function initProductsPage() {
     const grid = document.getElementById('productsGrid');
     const filterBar = document.getElementById('filterBar');
@@ -113,21 +113,19 @@ async function initProductsPage() {
 
     let products = [];
 
-    // Try API, fallback to placeholders
     try {
         const data = await OreonAPI.getProducts();
         products = data.products || [];
-    } catch (e) {
+    } catch (err) {
         products = [...PLACEHOLDER_PRODUCTS];
     }
 
-    // Check URL param for initial category
     const urlCategory = getUrlParam('category');
 
     function renderProducts(category = 'all') {
         const filtered = category === 'all'
             ? products
-            : products.filter(p => p.category_slug === category);
+            : products.filter(product => product.category_slug === category);
 
         if (filtered.length === 0) {
             grid.innerHTML = `
@@ -138,7 +136,7 @@ async function initProductsPage() {
                 </div>
             `;
         } else {
-            grid.innerHTML = filtered.map(p => createProductCard(p)).join('');
+            grid.innerHTML = filtered.map(product => createProductCard(product)).join('');
             bindProductCardLinks(grid);
 
             // =====KI=====
@@ -152,7 +150,6 @@ async function initProductsPage() {
         }
     }
 
-    // Filter buttons
     if (filterBar) {
         filterBar.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -163,7 +160,6 @@ async function initProductsPage() {
         });
     }
 
-    // Apply URL filter
     if (urlCategory) {
         const btn = filterBar?.querySelector(`[data-category="${urlCategory}"]`);
         if (btn) {
@@ -184,12 +180,11 @@ async function initFeaturedProducts() {
         const data = await OreonAPI.getProducts();
         if (data.products) {
             const featured = data.products.slice(0, 4);
-            grid.innerHTML = featured.map(p => createProductCard(p)).join('');
+            grid.innerHTML = featured.map(product => createProductCard(product)).join('');
             bindProductCardLinks(grid);
             return;
         }
-    } catch (e) {
-        // fallback below
+    } catch (err) {
     }
 
     grid.innerHTML = getPlaceholderProducts();

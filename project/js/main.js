@@ -1,8 +1,3 @@
-/**
- * Oréon – Main JS
- * Navigation, GSAP Animationen, Utils
- */
-
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initGSAPAnimations();
@@ -11,13 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
 });
 
-// ========== Navigation ==========
 function initNavigation() {
     const navbar = document.getElementById('navbar');
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
 
-    // Scroll effect
     if (navbar && !navbar.classList.contains('scrolled')) {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
@@ -28,14 +21,12 @@ function initNavigation() {
         });
     }
 
-    // Mobile toggle
     if (navToggle && navLinks) {
         navToggle.addEventListener('click', () => {
             navToggle.classList.toggle('active');
             navLinks.classList.toggle('open');
         });
 
-        // Close on link click
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navToggle.classList.remove('active');
@@ -166,7 +157,6 @@ function initGSAPAnimations() {
     // ============
 }
 
-// ========== Hero Particles ==========
 function initHeroParticles() {
     const container = document.getElementById('heroParticles');
     if (!container) return;
@@ -182,7 +172,6 @@ function initHeroParticles() {
         particle.style.height = particle.style.width;
         container.appendChild(particle);
     }
-
     // ============
 }
 
@@ -197,7 +186,6 @@ function initContactForm() {
     });
 }
 
-// ========== Toast Notifications ==========
 function showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     if (!container) return;
@@ -226,7 +214,6 @@ function showToast(message, type = 'info') {
     // ============
 }
 
-// ========== Utils ==========
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;

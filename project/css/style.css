@@ -1,9 +1,3 @@
-/* ===================================
-   Oréon – Luxury Jewelry Online Shop
-   Main Stylesheet
-   =================================== */
-
-/* ---------- CSS Custom Properties ---------- */
 :root {
   --emerald: #0c6b3d;
   --emerald-light: #0e8a4f;
@@ -37,7 +31,6 @@
   --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ---------- Reset & Base ---------- */
 *,
 *::before,
 *::after {
@@ -87,31 +80,15 @@ h5 {
 }
 
 h1 {
-  font-size: 3.5rem;
+  font-size: 56px;
 }
 h2 {
-  font-size: 2.5rem;
+  font-size: 40px;
 }
 h3 {
-  font-size: 1.8rem;
+  font-size: 28.8px;
 }
 
-/* ---------- Scrollbar ---------- */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--dark-green-deep);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--emerald);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
-}
-
-/* ---------- Utility ---------- */
 .container {
   width: 100%;
   max-width: 1280px;
@@ -136,7 +113,7 @@ h3 {
 .section-subtitle {
   font-family: var(--font-main);
   font-weight: 300;
-  font-size: 1.1rem;
+  font-size: 17.6px;
   color: var(--champagne-dark);
   margin-top: 12px;
   opacity: 0.8;
@@ -226,7 +203,7 @@ h3 {
 }
 
 .category-card-icon {
-  font-size: 5rem;
+  font-size: 80px;
   color: rgba(201, 168, 76, 0.3);
 }
 
@@ -236,7 +213,7 @@ h3 {
 
 .legal-note {
   opacity: 0.5;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   margin-top: 24px;
 }
 
@@ -254,7 +231,7 @@ h3 {
 
 .account-danger-text {
   color: rgba(245, 232, 209, 0.75);
-  font-size: 0.95rem;
+  font-size: 15.2px;
 }
 
 .config-price-highlight {
@@ -294,7 +271,7 @@ h3 {
 }
 
 .checkout-success-icon {
-  font-size: 4rem;
+  font-size: 64px;
   margin-bottom: 16px;
 }
 
@@ -309,7 +286,7 @@ h3 {
 }
 
 .cart-item-icon {
-  font-size: 2rem;
+  font-size: 32px;
   color: rgba(201, 168, 76, 0.4);
 }
 
@@ -317,7 +294,6 @@ h3 {
   grid-column: 1 / -1;
 }
 
-/* ---------- Navigation ---------- */
 .navbar {
   position: fixed;
   top: 0;
@@ -343,7 +319,6 @@ h3 {
   transition: all 0.4s ease;
 }
 
-/* Not scrolled (hero) – center logo, hide nav */
 .navbar:not(.scrolled) .container {
   justify-content: center;
 }
@@ -361,7 +336,7 @@ h3 {
   align-items: center;
   gap: 12px;
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 28.8px;
   font-weight: 700;
   color: var(--gold);
   letter-spacing: 3px;
@@ -372,7 +347,6 @@ h3 {
   color: var(--gold-light);
 }
 
-/* Logo images */
 .logo-full {
   height: 48px;
   object-fit: contain;
@@ -387,7 +361,7 @@ h3 {
   transition: color 0.3s ease;
 }
 
-/* Not scrolled: full logo centered */
+/* =====KI===== */
 .navbar:not(.scrolled) .logo-full {
   display: block;
 }
@@ -397,7 +371,6 @@ h3 {
   display: none;
 }
 
-/* Scrolled: icon + name left-aligned */
 .navbar.scrolled .logo-full {
   display: none;
 }
@@ -406,6 +379,7 @@ h3 {
 .navbar.scrolled .logo-text {
   display: block;
 }
+/* ============ */
 
 .nav-links {
   display: flex;
@@ -416,7 +390,7 @@ h3 {
 
 .nav-links a {
   color: var(--champagne);
-  font-size: 0.95rem;
+  font-size: 15.2px;
   font-weight: 400;
   letter-spacing: 0.5px;
   position: relative;
@@ -453,7 +427,7 @@ h3 {
   right: -10px;
   background: var(--gold);
   color: var(--dark-green-deep);
-  font-size: 0.7rem;
+  font-size: 11.2px;
   font-weight: 700;
   width: 18px;
   height: 18px;
@@ -471,7 +445,7 @@ h3 {
 
 .nav-icon {
   color: var(--champagne);
-  font-size: 1.2rem;
+  font-size: 19.2px;
   cursor: pointer;
   transition: color var(--transition);
 }
@@ -480,7 +454,6 @@ h3 {
   color: var(--gold);
 }
 
-/* Mobile Menu */
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -508,7 +481,6 @@ h3 {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* ---------- Buttons ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -516,7 +488,7 @@ h3 {
   gap: 8px;
   padding: 14px 32px;
   font-family: var(--font-main);
-  font-size: 0.95rem;
+  font-size: 15.2px;
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -530,6 +502,7 @@ h3 {
   z-index: 1;
 }
 
+/* =====KI===== */
 /* Primary Button – Shimmer sweep */
 .btn-primary {
   background: linear-gradient(
@@ -550,7 +523,7 @@ h3 {
   transform: translateY(-2px);
   color: var(--dark-green-deep);
 }
-/* =====KI===== */
+
 @keyframes primaryShimmer {
   0% {
     background-position: 0% 50%;
@@ -561,7 +534,6 @@ h3 {
 }
 /* ============ */
 
-/* Secondary Button – Animated border */
 .btn-secondary {
   background: transparent;
   color: var(--gold);
@@ -592,12 +564,11 @@ h3 {
   color: var(--dark-green-deep);
 }
 
-/* CTA Button – Rotating gradient border */
 .btn-cta {
   background: var(--dark-green);
   color: var(--gold);
   padding: 16px 40px;
-  font-size: 1rem;
+  font-size: 16px;
   border-radius: var(--radius-md);
   border: none;
   position: relative;
@@ -677,7 +648,6 @@ h3 {
   inherits: false;
 }
 
-/* Danger Button */
 .btn-danger {
   background: transparent;
   color: var(--error);
@@ -689,22 +659,19 @@ h3 {
   color: var(--white);
 }
 
-/* Small Button */
 .btn-sm {
   padding: 8px 20px;
-  font-size: 0.8rem;
+  font-size: 12.8px;
 }
 
-/* Icon Button */
 .btn-icon {
   width: 44px;
   height: 44px;
   padding: 0;
   border-radius: 50%;
-  font-size: 1.1rem;
+  font-size: 17.6px;
 }
 
-/* ---------- Hero Section ---------- */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -757,6 +724,7 @@ h3 {
 }
 /* ============ */
 
+/* =====KI===== */
 /* Floating gold particles */
 .hero-particles {
   position: absolute;
@@ -774,7 +742,6 @@ h3 {
   opacity: 0;
   animation: particleFloat 8s ease-in-out infinite;
 }
-/* =====KI===== */
 @keyframes particleFloat {
   0% {
     opacity: 0;
@@ -807,7 +774,7 @@ h3 {
   background: rgba(201, 168, 76, 0.1);
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 30px;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--gold);
@@ -815,7 +782,7 @@ h3 {
 }
 
 .hero-title {
-  font-size: 5.5rem;
+  font-size: 88px;
   font-weight: 700;
   color: var(--champagne);
   margin-bottom: 16px;
@@ -828,7 +795,7 @@ h3 {
 }
 
 .hero-subtitle {
-  font-size: 1.3rem;
+  font-size: 20.8px;
   color: var(--champagne-dark);
   font-weight: 300;
   margin-bottom: 40px;
@@ -845,7 +812,6 @@ h3 {
   flex-wrap: wrap;
 }
 
-/* Gold line decorator */
 .line-decorator {
   width: 60px;
   height: 2px;
@@ -853,7 +819,6 @@ h3 {
   margin: 20px auto;
 }
 
-/* ---------- Product Cards ---------- */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -927,7 +892,7 @@ h3 {
 }
 
 .product-card-img .placeholder-icon {
-  font-size: 4rem;
+  font-size: 64px;
   color: rgba(201, 168, 76, 0.3);
 }
 
@@ -936,7 +901,7 @@ h3 {
 }
 
 .product-card-category {
-  font-size: 0.75rem;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--emerald-light);
@@ -945,13 +910,13 @@ h3 {
 
 .product-card-title {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 20.8px;
   color: var(--champagne);
   margin-bottom: 8px;
 }
 
 .product-card-desc {
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
   opacity: 0.7;
   margin-bottom: 16px;
@@ -969,7 +934,7 @@ h3 {
 
 .product-price {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 22.4px;
   color: var(--gold);
   font-weight: 600;
   display: flex;
@@ -979,7 +944,7 @@ h3 {
 }
 
 .product-price small {
-  font-size: 0.8rem;
+  font-size: 12.8px;
   color: var(--champagne-dark);
   font-weight: 400;
 }
@@ -989,7 +954,6 @@ h3 {
   white-space: nowrap;
 }
 
-/* ---------- Category Feature Cards ---------- */
 .category-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -1048,7 +1012,7 @@ h3 {
 }
 
 .category-card-content h3 {
-  font-size: 2rem;
+  font-size: 32px;
   color: var(--champagne);
   margin-bottom: 8px;
 }
@@ -1059,7 +1023,6 @@ h3 {
   opacity: 0.8;
 }
 
-/* ---------- Features Section ---------- */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1082,24 +1045,23 @@ h3 {
 }
 
 .feature-icon {
-  font-size: 2.5rem;
+  font-size: 40px;
   margin-bottom: 20px;
   display: block;
 }
 
 .feature-card h3 {
-  font-size: 1.2rem;
+  font-size: 19.2px;
   color: var(--gold);
   margin-bottom: 12px;
 }
 
 .feature-card p {
-  font-size: 0.95rem;
+  font-size: 15.2px;
   color: var(--champagne-dark);
   opacity: 0.7;
 }
 
-/* ---------- Configurator Wizard ---------- */
 .wizard-fullscreen {
   display: flex;
   flex-direction: column;
@@ -1108,7 +1070,6 @@ h3 {
   background: var(--dark-green-deep);
 }
 
-/* Top bar */
 .wizard-topbar {
   display: flex;
   align-items: center;
@@ -1127,7 +1088,7 @@ h3 {
   background: none;
   border: 1px solid rgba(201, 168, 76, 0.2);
   color: var(--champagne);
-  font-size: 0.85rem;
+  font-size: 13.6px;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1141,7 +1102,7 @@ h3 {
 
 .wizard-product-name {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 19.2px;
   color: var(--champagne);
   font-weight: 500;
   white-space: nowrap;
@@ -1170,7 +1131,7 @@ h3 {
 
 .wizard-icon {
   color: var(--champagne);
-  font-size: 1.1rem;
+  font-size: 17.6px;
   opacity: 0.7;
   transition: all var(--transition);
   position: relative;
@@ -1182,7 +1143,7 @@ h3 {
 }
 
 .wizard-price-label {
-  font-size: 0.7rem;
+  font-size: 11.2px;
   color: var(--champagne-dark);
   opacity: 0.6;
   text-transform: uppercase;
@@ -1191,12 +1152,11 @@ h3 {
 
 .wizard-price-value {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 20.8px;
   color: var(--gold);
   font-weight: 700;
 }
 
-/* Step indicator */
 .wizard-steps-indicator {
   display: flex;
   align-items: center;
@@ -1229,7 +1189,7 @@ h3 {
 }
 
 .wizard-step-dot span {
-  font-size: 0.7rem;
+  font-size: 11.2px;
   color: var(--champagne-dark);
   opacity: 0.4;
   letter-spacing: 0.5px;
@@ -1271,7 +1231,6 @@ h3 {
   background: var(--emerald);
 }
 
-/* Main area */
 .wizard-main {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1280,7 +1239,6 @@ h3 {
   overflow: hidden;
 }
 
-/* 3D View */
 .wizard-3d {
   position: relative;
   background: rgba(46, 46, 46, 0.1);
@@ -1295,7 +1253,6 @@ h3 {
   outline: none;
 }
 
-/* Steps panel */
 .wizard-panel {
   display: flex;
   flex-direction: column;
@@ -1320,7 +1277,6 @@ h3 {
   flex: 1;
 }
 
-/* Summary step */
 .wizard-summary {
   display: flex;
   flex-direction: column;
@@ -1339,7 +1295,7 @@ h3 {
 }
 
 .wizard-summary-row .summary-label {
-  font-size: 0.8rem;
+  font-size: 12.8px;
   color: var(--champagne-dark);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1353,12 +1309,11 @@ h3 {
 .engraving-char-count {
   color: var(--champagne-dark);
   opacity: 0.5;
-  font-size: 0.8rem;
+  font-size: 12.8px;
   margin-top: 6px;
   display: inline-block;
 }
 
-/* Wizard navigation */
 .wizard-nav {
   display: flex;
   gap: 12px;
@@ -1387,7 +1342,7 @@ h3 {
 
 .config-group-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 17.6px;
   color: var(--gold);
   margin-bottom: 16px;
   display: flex;
@@ -1407,7 +1362,7 @@ h3 {
   border: 1px solid rgba(201, 168, 76, 0.15);
   border-radius: var(--radius-sm);
   color: var(--champagne);
-  font-size: 0.9rem;
+  font-size: 14.4px;
   cursor: pointer;
   transition: all var(--transition);
 }
@@ -1425,13 +1380,12 @@ h3 {
 }
 
 .config-option .price-mod {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: var(--champagne-dark);
   display: block;
   margin-top: 2px;
 }
 
-/* Material swatches */
 .material-swatch {
   display: flex;
   align-items: center;
@@ -1446,7 +1400,6 @@ h3 {
   flex-shrink: 0;
 }
 
-/* Engraving input */
 .config-input {
   width: 100%;
   padding: 12px 16px;
@@ -1455,7 +1408,7 @@ h3 {
   border-radius: var(--radius-sm);
   color: var(--champagne);
   font-family: var(--font-main);
-  font-size: 0.95rem;
+  font-size: 15.2px;
   transition: border-color var(--transition);
 }
 
@@ -1470,7 +1423,6 @@ h3 {
   opacity: 0.5;
 }
 
-/* Price display */
 .price-display {
   background: rgba(201, 168, 76, 0.08);
   border: 1px solid rgba(201, 168, 76, 0.2);
@@ -1480,20 +1432,20 @@ h3 {
 }
 
 .price-display .price-label {
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
   margin-bottom: 8px;
 }
 
 .price-display .price-value {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 40px;
   color: var(--gold);
   font-weight: 700;
 }
 
 .price-display .price-breakdown {
-  font-size: 0.8rem;
+  font-size: 12.8px;
   color: var(--champagne-dark);
   margin-top: 8px;
   opacity: 0.6;
@@ -1510,14 +1462,13 @@ h3 {
   min-width: 180px;
 }
 
-/* ---------- Forms ---------- */
 .form-group {
   margin-bottom: 20px;
 }
 
 .form-label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   color: var(--champagne-dark);
   margin-bottom: 6px;
   letter-spacing: 0.5px;
@@ -1532,7 +1483,7 @@ h3 {
   border-radius: var(--radius-sm);
   color: var(--champagne);
   font-family: var(--font-main);
-  font-size: 1rem;
+  font-size: 16px;
   transition: all var(--transition);
 }
 
@@ -1563,11 +1514,10 @@ select.form-input {
 
 .form-error {
   color: var(--error);
-  font-size: 0.8rem;
+  font-size: 12.8px;
   margin-top: 4px;
 }
 
-/* ---------- Auth Pages ---------- */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -1589,7 +1539,7 @@ select.form-input {
   text-align: center;
   color: var(--gold);
   margin-bottom: 8px;
-  font-size: 2rem;
+  font-size: 32px;
 }
 
 .auth-card .auth-subtitle {
@@ -1602,7 +1552,7 @@ select.form-input {
 .auth-switch {
   text-align: center;
   margin-top: 24px;
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
 }
 
@@ -1611,7 +1561,6 @@ select.form-input {
   font-weight: 600;
 }
 
-/* Tab switching */
 .auth-tabs {
   display: flex;
   gap: 4px;
@@ -1627,7 +1576,7 @@ select.form-input {
   padding: 12px;
   border-radius: calc(var(--radius-sm) - 2px);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
   transition: all var(--transition);
   border: none;
@@ -1640,7 +1589,6 @@ select.form-input {
   color: var(--champagne);
 }
 
-/* ---------- Cart ---------- */
 .cart-page {
   padding: 120px 0 60px;
   min-height: 100vh;
@@ -1696,13 +1644,13 @@ select.form-input {
 }
 
 .cart-item-details h3 {
-  font-size: 1.1rem;
+  font-size: 17.6px;
   color: var(--champagne);
   margin-bottom: 4px;
 }
 
 .cart-item-config {
-  font-size: 0.85rem;
+  font-size: 13.6px;
   color: var(--champagne-dark);
   opacity: 0.7;
 }
@@ -1721,7 +1669,7 @@ select.form-input {
 
 .cart-item-price {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 20.8px;
   color: var(--gold);
 }
 
@@ -1742,7 +1690,7 @@ select.form-input {
   color: var(--champagne);
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 16px;
   transition: all var(--transition);
   display: flex;
   align-items: center;
@@ -1761,7 +1709,6 @@ select.form-input {
   color: var(--champagne);
 }
 
-/* Cart Summary */
 .cart-summary {
   background: rgba(46, 46, 46, 0.2);
   border: 1px solid rgba(201, 168, 76, 0.1);
@@ -1773,7 +1720,7 @@ select.form-input {
 }
 
 .cart-summary h2 {
-  font-size: 1.5rem;
+  font-size: 24px;
   color: var(--champagne);
   margin-bottom: 24px;
 }
@@ -1807,14 +1754,14 @@ select.form-input {
 }
 
 .summary-total .label {
-  font-size: 1.1rem;
+  font-size: 17.6px;
   color: var(--champagne);
   font-weight: 600;
 }
 
 .summary-total .value {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 24px;
   color: var(--gold);
   font-weight: 700;
 }
@@ -1824,14 +1771,13 @@ select.form-input {
   margin-top: 20px;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 80px 24px;
 }
 
 .empty-state-icon {
-  font-size: 4rem;
+  font-size: 64px;
   margin-bottom: 20px;
   opacity: 0.4;
 }
@@ -1847,7 +1793,6 @@ select.form-input {
   opacity: 0.6;
 }
 
-/* ---------- Account Page ---------- */
 .account-page {
   padding: 120px 0 60px;
   min-height: 100vh;
@@ -1874,7 +1819,7 @@ select.form-input {
   border: none;
   background: none;
   font-family: var(--font-main);
-  font-size: 0.95rem;
+  font-size: 15.2px;
   text-align: left;
   display: flex;
   align-items: center;
@@ -1900,14 +1845,13 @@ select.form-input {
 }
 
 .account-section-title {
-  font-size: 1.5rem;
+  font-size: 24px;
   color: var(--gold);
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(201, 168, 76, 0.1);
 }
 
-/* Saved Configurations */
 .config-list {
   display: flex;
   flex-direction: column;
@@ -1942,7 +1886,7 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 32px;
 }
 
 .config-card-info h4 {
@@ -1951,7 +1895,7 @@ select.form-input {
 }
 
 .config-card-info p {
-  font-size: 0.85rem;
+  font-size: 13.6px;
   color: var(--champagne-dark);
   opacity: 0.7;
 }
@@ -1961,7 +1905,6 @@ select.form-input {
   gap: 8px;
 }
 
-/* Orders */
 .order-list {
   display: flex;
   flex-direction: column;
@@ -1990,7 +1933,7 @@ select.form-input {
 .order-status {
   padding: 4px 12px;
   border-radius: 30px;
-  font-size: 0.75rem;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -2019,7 +1962,7 @@ select.form-input {
 .order-details {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
 }
 
@@ -2028,7 +1971,6 @@ select.form-input {
   font-weight: 600;
 }
 
-/* ---------- Checkout ---------- */
 .checkout-page {
   padding: 120px 0 60px;
   min-height: 100vh;
@@ -2054,7 +1996,7 @@ select.form-input {
 }
 
 .checkout-section h2 {
-  font-size: 1.3rem;
+  font-size: 20.8px;
   color: var(--gold);
   margin-bottom: 20px;
 }
@@ -2087,7 +2029,6 @@ select.form-input {
   accent-color: var(--gold);
 }
 
-/* ---------- Footer ---------- */
 .footer {
   background: var(--dark-green-deep);
   border-top: 1px solid rgba(201, 168, 76, 0.1);
@@ -2108,7 +2049,7 @@ select.form-input {
 }
 
 .footer-brand p {
-  font-size: 0.9rem;
+  font-size: 14.4px;
   color: var(--champagne-dark);
   opacity: 0.6;
   max-width: 300px;
@@ -2116,7 +2057,7 @@ select.form-input {
 
 .footer-col h4 {
   color: var(--gold);
-  font-size: 0.9rem;
+  font-size: 14.4px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 16px;
@@ -2132,7 +2073,7 @@ select.form-input {
 
 .footer-col ul li a {
   color: var(--champagne-dark);
-  font-size: 0.9rem;
+  font-size: 14.4px;
   opacity: 0.6;
   transition: all var(--transition);
 }
@@ -2146,12 +2087,11 @@ select.form-input {
   text-align: center;
   padding-top: 24px;
   border-top: 1px solid rgba(201, 168, 76, 0.08);
-  font-size: 0.8rem;
+  font-size: 12.8px;
   color: var(--champagne-dark);
   opacity: 0.4;
 }
 
-/* ---------- Info Pages (About / Contact / Legal) ---------- */
 .info-content {
   max-width: 800px;
   margin: 0 auto;
@@ -2163,7 +2103,7 @@ select.form-input {
 
 .info-block h2 {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 25.6px;
   color: var(--champagne);
   margin-bottom: 16px;
 }
@@ -2174,7 +2114,6 @@ select.form-input {
   margin-bottom: 12px;
 }
 
-/* Values grid (About page) */
 .info-values-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2203,25 +2142,24 @@ select.form-input {
   background: rgba(201, 168, 76, 0.1);
   border-radius: 50%;
   color: var(--gold);
-  font-size: 1.1rem;
+  font-size: 17.6px;
   margin-bottom: 16px;
 }
 
 .info-value-card h3 {
   font-family: var(--font-display);
   color: var(--champagne);
-  font-size: 1.1rem;
+  font-size: 17.6px;
   margin-bottom: 8px;
 }
 
 .info-value-card p {
   color: var(--champagne-dark);
   opacity: 0.7;
-  font-size: 0.9rem;
+  font-size: 14.4px;
   line-height: 1.6;
 }
 
-/* Contact cards */
 .contact-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2257,25 +2195,24 @@ select.form-input {
   background: rgba(201, 168, 76, 0.1);
   border-radius: 50%;
   color: var(--gold);
-  font-size: 0.95rem;
+  font-size: 15.2px;
   margin-bottom: 12px;
 }
 
 .contact-card h3 {
   font-family: var(--font-display);
   color: var(--champagne);
-  font-size: 1rem;
+  font-size: 16px;
   margin-bottom: 6px;
 }
 
 .contact-card p {
   color: var(--champagne-dark);
   opacity: 0.7;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   line-height: 1.6;
 }
 
-/* Contact form */
 .contact-form .form-group {
   margin-bottom: 20px;
 }
@@ -2285,7 +2222,6 @@ select.form-input {
   min-height: 120px;
 }
 
-/* Legal pages */
 .legal-content .info-block {
   margin-bottom: 36px;
 }
@@ -2311,7 +2247,6 @@ select.form-input {
   color: var(--gold);
 }
 
-/* ---------- Page Header ---------- */
 .page-header {
   padding: 140px 0 60px;
   text-align: center;
@@ -2356,7 +2291,7 @@ select.form-input {
   display: flex;
   justify-content: center;
   gap: 8px;
-  font-size: 0.85rem;
+  font-size: 13.6px;
   color: var(--champagne-dark);
   opacity: 0.5;
   margin-bottom: 20px;
@@ -2371,7 +2306,6 @@ select.form-input {
   color: var(--gold);
 }
 
-/* ---------- Notification / Toast ---------- */
 .toast-container {
   position: fixed;
   top: 100px;
@@ -2386,7 +2320,7 @@ select.form-input {
   padding: 16px 24px;
   border-radius: var(--radius-sm);
   color: var(--champagne);
-  font-size: 0.9rem;
+  font-size: 14.4px;
   box-shadow: var(--shadow-md);
   animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
@@ -2434,7 +2368,6 @@ select.form-input {
 }
 /* ============ */
 
-/* ---------- Loading ---------- */
 .loader {
   display: flex;
   justify-content: center;
@@ -2458,7 +2391,6 @@ select.form-input {
 }
 /* ============ */
 
-/* Skeleton loading */
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -2481,7 +2413,6 @@ select.form-input {
 }
 /* ============ */
 
-/* ---------- Modal / Overlay ---------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -2528,7 +2459,7 @@ select.form-input {
   background: none;
   border: none;
   color: var(--champagne-dark);
-  font-size: 1.5rem;
+  font-size: 24px;
   cursor: pointer;
   transition: color var(--transition);
 }
@@ -2559,7 +2490,7 @@ select.form-input {
   transform: scale(0.9);
 }
 
-/* ---------- Products Page Filter ---------- */
+
 .filter-bar {
   display: flex;
   gap: 12px;
@@ -2575,7 +2506,7 @@ select.form-input {
   border-radius: 30px;
   color: var(--champagne-dark);
   font-family: var(--font-main);
-  font-size: 0.9rem;
+  font-size: 14.4px;
   cursor: pointer;
   transition: all var(--transition);
 }
