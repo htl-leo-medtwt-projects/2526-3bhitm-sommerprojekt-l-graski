@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -16,6 +16,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
     <script src="https://cdn.babylonjs.com/babylon.js" defer></script>
     <script
       src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"
@@ -36,6 +44,7 @@
         </a>
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html">Produkte</a></li>
           <li><a href="configurator.html" class="active">Konfigurator</a></li>
           <li><a href="account.html">Mein Konto</a></li>
         </ul>
@@ -60,6 +69,9 @@
 
     <div class="page-header">
       <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Startseite</a> / <span>Konfigurator</span>
+        </div>
         <h1 class="reveal">
           Schmuck <span class="text-gold">Konfigurator</span>
         </h1>
@@ -97,6 +109,14 @@
               <span class="wizard-price-value" id="configTotalPrice"
                 >€ 0,00</span
               >
+            </div>
+            <div class="wizard-topbar-icons">
+              <a href="cart.html" class="wizard-icon" title="Warenkorb">
+                <i class="fas fa-shopping-bag"></i>
+              </a>
+              <a href="account.html" class="wizard-icon" title="Mein Konto">
+                <i class="fas fa-user"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -165,9 +185,8 @@
                   <i class="fas fa-pen-nib"></i> Gravur (optional)
                 </div>
                 <div
-                  class="config-options"
+                  class="config-options config-options-spaced"
                   id="configEngravings"
-                  style="margin-bottom: 12px"
                 ></div>
                 <input
                   type="text"
@@ -200,29 +219,16 @@
                 </div>
                 <input
                   type="text"
-                  class="config-input"
+                  class="config-input config-input-spaced"
                   id="configName"
                   placeholder="Name deiner Konfiguration (z.B. 'Mein Ehering')"
                   maxlength="100"
-                  style="margin-top: 16px"
                 />
-                <div class="config-actions" style="margin-top: 20px">
-                  <button
-                    class="btn btn-primary"
-                    id="btnAddToCart"
-                    disabled
-                    aria-disabled="true"
-                    title="Deaktiviert."
-                  >
+                <div class="config-actions config-actions-spaced">
+                  <button class="btn btn-primary" id="btnAddToCart">
                     <i class="fas fa-shopping-bag"></i> In den Warenkorb
                   </button>
-                  <button
-                    class="btn btn-cta"
-                    id="btnSaveConfig"
-                    disabled
-                    aria-disabled="true"
-                    title="Deaktiviert."
-                  >
+                  <button class="btn btn-cta" id="btnSaveConfig">
                     <i class="fas fa-save"></i> Speichern
                   </button>
                 </div>
@@ -252,17 +258,25 @@
           <div class="footer-col">
             <h4>Shop</h4>
             <ul>
+              <li><a href="products.html?category=ringe">Ringe</a></li>
+              <li><a href="products.html?category=armbaender">Armbänder</a></li>
               <li><a href="configurator.html">Konfigurator</a></li>
             </ul>
           </div>
           <div class="footer-col">
             <h4>Konto</h4>
-            <ul></ul>
+            <ul>
+              <li><a href="account.html">Mein Konto</a></li>
+              <li><a href="cart.html">Warenkorb</a></li>
+            </ul>
           </div>
           <div class="footer-col">
             <h4>Info</h4>
             <ul>
-              <li><a href="index.html#features">Überblick</a></li>
+              <li><a href="about.html">Über uns</a></li>
+              <li><a href="contact.html">Kontakt</a></li>
+              <li><a href="privacy.html">Datenschutz</a></li>
+              <li><a href="imprint.html">Impressum</a></li>
             </ul>
           </div>
         </div>

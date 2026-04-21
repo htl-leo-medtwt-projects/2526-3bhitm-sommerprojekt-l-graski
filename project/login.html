@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -16,7 +16,17 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+      defer
+    ></script>
+    <script src="js/api.js" defer></script>
     <script src="js/main.js" defer></script>
+    <script src="js/auth.js" defer></script>
   </head>
   <body>
     <nav class="navbar scrolled" id="navbar">
@@ -28,6 +38,7 @@
         </a>
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Startseite</a></li>
+          <li><a href="products.html">Produkte</a></li>
           <li><a href="configurator.html">Konfigurator</a></li>
           <li><a href="account.html">Mein Konto</a></li>
         </ul>
@@ -35,9 +46,6 @@
           <a href="cart.html" class="nav-icon nav-cart" title="Warenkorb">
             <i class="fas fa-shopping-bag"></i>
             <span class="nav-cart-count" id="cartCount">0</span>
-          </a>
-          <a href="login.html" class="nav-icon active" title="Anmelden">
-            <i class="fas fa-user"></i>
           </a>
           <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
             <span></span>
@@ -51,11 +59,15 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <div class="auth-page">
-      <div class="auth-card">
-        <h1>Anmelden</h1>
-        <p class="auth-subtitle">Willkommen zurück bei Oréon</p>
+      <div class="auth-card reveal-scale">
+        <div class="auth-tabs">
+          <button class="auth-tab" data-tab="login">Anmelden</button>
+          <button class="auth-tab active" data-tab="register">
+            Registrieren
+          </button>
+        </div>
 
-        <form>
+        <form id="loginForm" class="hidden">
           <div class="form-group">
             <label class="form-label" for="loginEmail">E-Mail</label>
             <input
@@ -63,6 +75,7 @@
               class="form-input"
               id="loginEmail"
               placeholder="deine@email.at"
+              required
               autocomplete="email"
             />
           </div>
@@ -72,19 +85,81 @@
               type="password"
               class="form-input"
               id="loginPassword"
-              placeholder="••••••••"
+              placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+              required
               autocomplete="current-password"
             />
           </div>
-
-          <button type="button" class="btn btn-primary" style="width: 100%">
+          <div id="loginError" class="form-error u-mb-16"></div>
+          <button type="submit" class="btn btn-primary u-w-100">
             <i class="fas fa-sign-in-alt"></i> Anmelden
           </button>
         </form>
 
-        <div class="auth-switch">
-          Noch kein Konto? <a href="register.html">Jetzt registrieren</a>
-        </div>
+        <form id="registerForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="regFirstName">Vorname</label>
+              <input
+                type="text"
+                class="form-input"
+                id="regFirstName"
+                placeholder="Max"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regLastName">Nachname</label>
+              <input
+                type="text"
+                class="form-input"
+                id="regLastName"
+                placeholder="Mustermann"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regEmail">E-Mail</label>
+            <input
+              type="email"
+              class="form-input"
+              id="regEmail"
+              placeholder="deine@email.at"
+              required
+              autocomplete="email"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regPassword">Passwort</label>
+            <input
+              type="password"
+              class="form-input"
+              id="regPassword"
+              placeholder="Mindestens 8 Zeichen"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regPasswordConfirm"
+              >Passwort bestätigen</label
+            >
+            <input
+              type="password"
+              class="form-input"
+              id="regPasswordConfirm"
+              placeholder="Passwort wiederholen"
+              required
+              autocomplete="new-password"
+            />
+          </div>
+          <div id="registerError" class="form-error u-mb-16"></div>
+          <button type="submit" class="btn btn-primary u-w-100">
+            <i class="fas fa-user-plus"></i> Registrieren
+          </button>
+        </form>
       </div>
     </div>
   </body>
