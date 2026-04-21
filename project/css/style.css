@@ -2287,25 +2287,6 @@ select.form-input {
   position: relative;
 }
 
-.breadcrumb {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  font-size: 13.6px;
-  color: var(--champagne-dark);
-  opacity: 0.5;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.breadcrumb a {
-  color: var(--champagne-dark);
-}
-
-.breadcrumb a:hover {
-  color: var(--gold);
-}
-
 .toast-container {
   position: fixed;
   top: 100px;
