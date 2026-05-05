@@ -54,6 +54,13 @@ const OreonAPI = {
         });
     },
 
+    async changePassword(currentPassword, newPassword) {
+        return this._fetch(`${API_BASE}/auth.php?action=change_password`, {
+            method: 'POST',
+            body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
+        });
+    },
+
     async saveConfiguration(data) {
         return this._fetch(`${API_BASE}/configurations.php?action=save`, {
             method: 'POST',

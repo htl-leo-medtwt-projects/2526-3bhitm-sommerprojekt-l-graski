@@ -166,6 +166,48 @@ switch ($action) {
             jsonResponse(['user' => $userOut]);
         }
 
+    case 'change_password': {
+            $userId = requireAuth();
+            $data = getJsonInput();
+
+            $currentPassword = $data['current_password'] ?? '';
+            $newPassword = $data['new_password'] ?? '';
+
+            if ($currentPassword === '' || $newPassword === '') {
+                jsonResponse(['error' => 'Aktuelles und neues Passwort erforderlich.'], 400);
+            }
+
+            if (strlen($newPassword) < 8) {
+                jsonResponse(['error' => 'Neues Passwort muss mindestens 8 Zeichen haben.'], 400);
+            }
+
+            $stmt = $conn->prepare('SELECT password_hash FROM users WHERE id = ? LIMIT 1');
+            $stmt->bind_param('i', $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $stmt->close();
+
+            if (!$row) {
+                jsonResponse(['error' => 'User nicht gefunden'], 404);
+            }
+
+            if (!password_verify($currentPassword, $row['password_hash'])) {
+                jsonResponse(['error' => 'Aktuelles Passwort ist falsch.'], 401);
+            }
+
+            $hash = password_hash($newPassword, PASSWORD_BCRYPT);
+            $stmt = $conn->prepare('UPDATE users SET password_hash = ? WHERE id = ?');
+            $stmt->bind_param('si', $hash, $userId);
+            if (!$stmt->execute()) {
+                $stmt->close();
+                jsonResponse(['error' => 'Passwort konnte nicht geändert werden.'], 500);
+            }
+            $stmt->close();
+
+            jsonResponse(['success' => true]);
+        }
+
     case 'delete': {
             $userId = requireAuth();
             $stmt = $conn->prepare('DELETE FROM users WHERE id = ?');

@@ -2,6 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCart();
 });
 
+const CART_QTY_MIN = 1;
+const CART_QTY_MAX = 100;
+
+function normalizeCartQuantity(value) {
+    let qty = parseInt(value, 10);
+    if (!Number.isFinite(qty)) qty = CART_QTY_MIN;
+    qty = Math.max(CART_QTY_MIN, Math.min(CART_QTY_MAX, qty));
+    return qty;
+}
+
 async function loadCart() {
     const list = document.getElementById('cartItems');
     const empty = document.getElementById('emptyCart');
@@ -60,8 +70,9 @@ function buildCartItem(item) {
         configParts.push(`Gravur: ${item.engraving_text}`);
     }
 
+    const quantity = normalizeCartQuantity(item.quantity || 1);
     const unit = parseFloat(item.unit_price ?? item.total_price ?? item.base_price ?? 0);
-    const price = unit * (item.quantity || 1);
+    const price = unit * quantity;
 
     return `
         <div class="cart-item">
@@ -76,7 +87,18 @@ function buildCartItem(item) {
                 <div class="cart-item-price">${formatPrice(price)}</div>
                 <div class="quantity-control">
                     <button class="quantity-btn" data-action="dec" data-id="${item.id}">-</button>
-                    <span class="quantity-value">${item.quantity || 1}</span>
+                    <input
+                        type="number"
+                        class="quantity-value"
+                        value="${quantity}"
+                        min="${CART_QTY_MIN}"
+                        max="${CART_QTY_MAX}"
+                        step="1"
+                        inputmode="numeric"
+                        data-action="set"
+                        data-id="${item.id}"
+                        aria-label="Menge"
+                    />
                     <button class="quantity-btn" data-action="inc" data-id="${item.id}">+</button>
                 </div>
                 <button class="btn btn-secondary btn-sm" data-action="remove" data-id="${item.id}">Entfernen</button>
@@ -86,7 +108,7 @@ function buildCartItem(item) {
 }
 
 function bindCartActions(items) {
-    const buttons = document.querySelectorAll('[data-action][data-id]');
+    const buttons = document.querySelectorAll('button[data-action][data-id]');
     buttons.forEach(btn => {
         btn.addEventListener('click', async () => {
             const id = parseInt(btn.dataset.id, 10);
@@ -99,18 +121,55 @@ function bindCartActions(items) {
                 return;
             }
 
-            const nextQty = action === 'inc' ? (item.quantity || 1) + 1 : (item.quantity || 1) - 1;
+            if (action !== 'inc' && action !== 'dec') return;
+
+            const currentQty = normalizeCartQuantity(item.quantity || 1);
+            const nextQty = action === 'inc' ? currentQty + 1 : currentQty - 1;
+            await updateCartItem(id, nextQty, false);
+        });
+    });
+
+    const qtyInputs = document.querySelectorAll('input.quantity-value[data-id]');
+    qtyInputs.forEach(input => {
+        const id = parseInt(input.dataset.id, 10);
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+
+        const selectAll = () => {
+            try {
+                input.select();
+            } catch (e) {
+            }
+        };
+
+        input.addEventListener('focus', selectAll);
+        input.addEventListener('click', selectAll);
+
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                input.blur();
+            }
+        });
+
+        input.addEventListener('blur', async () => {
+            const currentQty = normalizeCartQuantity(item.quantity || 1);
+            const nextQty = normalizeCartQuantity(input.value);
+            input.value = String(nextQty);
+
+            if (nextQty === currentQty) return;
             await updateCartItem(id, nextQty, false);
         });
     });
 }
 
-async function updateCartItem(id, quantity, removeIfZero) {
+async function updateCartItem(id, quantity, removeExplicit) {
     try {
-        if (removeIfZero || quantity <= 0) {
+        if (removeExplicit) {
             await OreonAPI.removeCartItem(id);
         } else {
-            await OreonAPI.updateCartItem(id, quantity);
+            const nextQty = normalizeCartQuantity(quantity);
+            await OreonAPI.updateCartItem(id, nextQty);
         }
         await loadCart();
     } catch (err) {

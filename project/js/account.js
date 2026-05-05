@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadConfigurations();
         loadOrders();
         loadProfile();
+        initChangePasswordForm();
         initDeleteAccount();
 
         if (window.location.hash === '#orders') {
@@ -316,4 +317,42 @@ async function loadProfile() {
             })();
         });
     }
+}
+
+function initChangePasswordForm() {
+    const form = document.getElementById('changePasswordForm');
+    const errorEl = document.getElementById('changePasswordError');
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (errorEl) errorEl.textContent = '';
+
+        const currentPassword = document.getElementById('currentPassword')?.value || '';
+        const newPassword = document.getElementById('newPassword')?.value || '';
+        const newPasswordConfirm = document.getElementById('newPasswordConfirm')?.value || '';
+
+        if (!currentPassword || !newPassword || !newPasswordConfirm) {
+            if (errorEl) errorEl.textContent = 'Bitte alle Felder ausfüllen.';
+            return;
+        }
+        if (newPassword.length < 8) {
+            if (errorEl) errorEl.textContent = 'Neues Passwort muss mindestens 8 Zeichen haben.';
+            return;
+        }
+        if (newPassword !== newPasswordConfirm) {
+            if (errorEl) errorEl.textContent = 'Neue Passwörter stimmen nicht überein.';
+            return;
+        }
+
+        try {
+            await OreonAPI.changePassword(currentPassword, newPassword);
+            showToast('Passwort geändert!', 'success');
+            form.reset();
+        } catch (err) {
+            const msg = err?.error || 'Passwort ändern fehlgeschlagen.';
+            if (errorEl) errorEl.textContent = msg;
+            else showToast(msg, 'error');
+        }
+    });
 }
