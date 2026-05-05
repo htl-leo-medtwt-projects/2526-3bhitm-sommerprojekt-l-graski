@@ -515,34 +515,37 @@ function initConfiguratorButtons() {
             engraving_text: selectedOptions.engravingText
         };
 
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            (async () => {
-                try {
-                    await OreonAPI.addToCart(
-                        cartItem.product_id,
-                        null,
-                        1,
-                        {
-                            category_slug: cartItem.category_slug,
-                            type_name: cartItem.type_name,
-                            material_name: cartItem.material_name,
-                            size_label: cartItem.size_label,
-                            shape_name: cartItem.shape_name,
-                            engraving_text: cartItem.engraving_text
-                        },
-                        cartItem.total_price
-                    );
-                    showToast('In den Warenkorb gelegt!', 'success');
-                    updateCartBadge();
-                } catch (err) {
-                    LocalStore.addToCart(cartItem);
-                    showToast('In den Warenkorb gelegt!', 'success');
-                }
-            })();
-        } else {
-            LocalStore.addToCart(cartItem);
-            showToast('In den Warenkorb gelegt!', 'success');
-        }
+        (async () => {
+            const user = await getCurrentUser();
+            if (!user) {
+                showToast('Bitte melde dich an, um den Warenkorb zu nutzen.', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1200);
+                return;
+            }
+
+            try {
+                bumpCartBadge(1);
+                await OreonAPI.addToCart(
+                    cartItem.product_id,
+                    null,
+                    1,
+                    {
+                        category_slug: cartItem.category_slug,
+                        type_name: cartItem.type_name,
+                        material_name: cartItem.material_name,
+                        size_label: cartItem.size_label,
+                        shape_name: cartItem.shape_name,
+                        engraving_text: cartItem.engraving_text
+                    },
+                    cartItem.total_price
+                );
+                showToast('In den Warenkorb gelegt!', 'success');
+                updateCartBadge();
+            } catch (err) {
+                updateCartBadge();
+                showToast(err?.error || 'Konnte nicht in den Warenkorb legen.', 'error');
+            }
+        })();
 
         // =====KI=====
         const btn = document.getElementById('btnAddToCart');
@@ -556,12 +559,6 @@ function initConfiguratorButtons() {
     });
 
     document.getElementById('btnSaveConfig')?.addEventListener('click', () => {
-        if (!LocalStore.isLoggedIn()) {
-            showToast('Bitte melde dich an, um Konfigurationen zu speichern.', 'error');
-            setTimeout(() => window.location.href = 'login.html', 1500);
-            return;
-        }
-
         if (!ConfigState.product) return;
 
         const selectedOptions = ConfigState.selected;
@@ -588,20 +585,21 @@ function initConfiguratorButtons() {
             engraving_text: selectedOptions.engravingText
         };
 
-        if (typeof OreonAPI !== 'undefined') {
-            (async () => {
-                try {
-                    await OreonAPI.saveConfiguration(payload);
-                    showToast('Konfiguration gespeichert!', 'success');
-                } catch (err) {
-                    LocalStore.saveConfiguration(payload);
-                    showToast('Konfiguration gespeichert!', 'success');
-                }
-            })();
-        } else {
-            LocalStore.saveConfiguration(payload);
-            showToast('Konfiguration gespeichert!', 'success');
-        }
+        (async () => {
+            const user = await getCurrentUser();
+            if (!user) {
+                showToast('Bitte melde dich an, um Konfigurationen zu speichern.', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+
+            try {
+                await OreonAPI.saveConfiguration(payload);
+                showToast('Konfiguration gespeichert!', 'success');
+            } catch (err) {
+                showToast(err?.error || 'Konfiguration speichern fehlgeschlagen.', 'error');
+            }
+        })();
 
         // =====KI=====
         const btn = document.getElementById('btnSaveConfig');
@@ -616,20 +614,19 @@ function initConfiguratorButtons() {
 }
 
 async function loadSavedConfiguration(configId) {
-    let config = null;
-
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getConfiguration(configId);
-            config = data.configuration;
-        } catch (err) {
-            config = null;
-        }
+    const user = await getCurrentUser();
+    if (!user) {
+        showToast('Bitte melde dich an, um Konfigurationen zu laden.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1200);
+        return;
     }
 
-    if (!config) {
-        const configs = LocalStore.getConfigurations();
-        config = configs.find(c => c.id === configId);
+    let config = null;
+    try {
+        const data = await OreonAPI.getConfiguration(configId);
+        config = data.configuration;
+    } catch (err) {
+        config = null;
     }
 
     if (!config) return;

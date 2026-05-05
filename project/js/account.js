@@ -1,27 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (!LocalStore.isLoggedIn()) {
-        window.location.href = 'login.html';
-        return;
-    }
+    (async () => {
+        const user = await getCurrentUser();
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
 
-    initAccountNav();
-    loadConfigurations();
-    loadOrders();
-    loadProfile();
-    initDeleteAccount();
+        initAccountNav();
+        loadConfigurations();
+        loadOrders();
+        loadProfile();
+        initDeleteAccount();
 
-    if (window.location.hash === '#orders') {
-        switchSection('orders');
-    }
+        if (window.location.hash === '#orders') {
+            switchSection('orders');
+        }
+    })();
 });
 
 function initDeleteAccount() {
     const btn = document.getElementById('deleteAccountBtn');
+    const modal = document.getElementById('deleteAccountModal');
+    const confirmBtn = document.getElementById('confirmDeleteAccount');
+    const cancelBtn = document.getElementById('cancelDeleteAccount');
     if (!btn) return;
 
-    btn.addEventListener('click', async () => {
-        const ok = confirm('Möchtest du deinen Account wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
-        if (!ok) return;
+    const openModal = () => {
+        if (modal) modal.classList.add('active');
+    };
+
+    const closeModal = () => {
+        if (modal) modal.classList.remove('active');
+    };
+
+    btn.addEventListener('click', () => {
+        openModal();
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+        closeModal();
+    });
+
+    modal?.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+    });
+
+    confirmBtn?.addEventListener('click', async () => {
+        closeModal();
 
         try {
             if (typeof OreonAPI !== 'undefined') {
@@ -32,8 +57,8 @@ function initDeleteAccount() {
             return;
         }
 
-        LocalStore.clearUser();
-        LocalStore.clearCart();
+        setCurrentUser(null);
+        updateCartBadge();
         showToast('Account gelöscht', 'success');
         setTimeout(() => window.location.href = 'index.html', 600);
     });
@@ -51,7 +76,8 @@ function initAccountNav() {
                         }
                     } catch (err) {
                     } finally {
-                        LocalStore.clearUser();
+                        setCurrentUser(null);
+                        updateCartBadge();
                         showToast('Abgemeldet', 'info');
                         setTimeout(() => window.location.href = 'index.html', 500);
                     }
@@ -87,15 +113,12 @@ async function loadConfigurations() {
     if (!list) return;
 
     let configs = [];
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getConfigurations();
-            configs = data.configurations || [];
-        } catch (err) {
-            configs = LocalStore.getConfigurations();
-        }
-    } else {
-        configs = LocalStore.getConfigurations();
+    try {
+        const data = await OreonAPI.getConfigurations();
+        configs = data.configurations || [];
+    } catch (err) {
+        showToast(err?.error || 'Konfigurationen konnten nicht geladen werden.', 'error');
+        configs = [];
     }
 
     if (configs.length === 0) {
@@ -166,65 +189,34 @@ function loadConfigToConfigurator(configId) {
 function addConfigToCart(configId) {
     (async () => {
         let config = null;
-
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                const data = await OreonAPI.getConfiguration(configId);
-                config = data.configuration;
-            } catch (err) {
-                config = null;
-            }
-        }
-
-        if (!config) {
-            const configs = LocalStore.getConfigurations();
-            config = configs.find(c => c.id === configId);
+        try {
+            const data = await OreonAPI.getConfiguration(configId);
+            config = data.configuration;
+        } catch (err) {
+            config = null;
         }
 
         if (!config) return;
 
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                await OreonAPI.addToCart(config.product_id, config.id, 1, null, config.total_price ?? null);
-                showToast('In den Warenkorb gelegt!', 'success');
-                updateCartBadge();
-                return;
-            } catch (err) {
-            }
+        try {
+            await OreonAPI.addToCart(config.product_id, config.id, 1, null, config.total_price ?? null);
+            showToast('In den Warenkorb gelegt!', 'success');
+            updateCartBadge();
+        } catch (err) {
+            showToast(err?.error || 'Konnte nicht in den Warenkorb legen.', 'error');
         }
-
-        LocalStore.addToCart({
-            product_id: config.product_id,
-            product_name: config.product_name,
-            category_slug: config.category_slug,
-            total_price: config.total_price,
-            base_price: config.base_price,
-            type_name: config.type_name,
-            material_name: config.material_name,
-            size_label: config.size_label,
-            shape_name: config.shape_name,
-            engraving_text: config.engraving_text
-        });
-
-        showToast('In den Warenkorb gelegt!', 'success');
     })();
 }
 
 function deleteConfig(configId) {
     (async () => {
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                await OreonAPI.deleteConfiguration(configId);
-                showToast('Konfiguration gelöscht', 'info');
-                await loadConfigurations();
-                return;
-            } catch (err) {
-            }
+        try {
+            await OreonAPI.deleteConfiguration(configId);
+            showToast('Konfiguration gelöscht', 'info');
+            await loadConfigurations();
+        } catch (err) {
+            showToast(err?.error || 'Konfiguration löschen fehlgeschlagen.', 'error');
         }
-
-        LocalStore.deleteConfiguration(configId);
-        showToast('Konfiguration gelöscht', 'info');
-        loadConfigurations();
     })();
 }
 
@@ -233,15 +225,12 @@ async function loadOrders() {
     if (!list) return;
 
     let orders = [];
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getOrders();
-            orders = data.orders || [];
-        } catch (err) {
-            orders = LocalStore.getOrders();
-        }
-    } else {
-        orders = LocalStore.getOrders();
+    try {
+        const data = await OreonAPI.getOrders();
+        orders = data.orders || [];
+    } catch (err) {
+        showToast(err?.error || 'Bestellungen konnten nicht geladen werden.', 'error');
+        orders = [];
     }
 
     if (orders.length === 0) {
@@ -281,18 +270,7 @@ async function loadOrders() {
 }
 
 async function loadProfile() {
-    let user = LocalStore.getUser();
-
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getMe();
-            if (data?.user) {
-                user = data.user;
-                LocalStore.setUser(user);
-            }
-        } catch (err) {
-        }
-    }
+    let user = await getCurrentUser();
 
     if (!user) return;
 
@@ -328,15 +306,13 @@ async function loadProfile() {
             };
 
             (async () => {
-                if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-                    try {
-                        await OreonAPI.updateProfile(updatedUser);
-                    } catch (err) {
-                    }
+                try {
+                    const data = await OreonAPI.updateProfile(updatedUser);
+                    setCurrentUser(data.user || updatedUser);
+                    showToast('Profil gespeichert!', 'success');
+                } catch (err) {
+                    showToast(err?.error || 'Profil speichern fehlgeschlagen.', 'error');
                 }
-
-                LocalStore.setUser(updatedUser);
-                showToast('Profil gespeichert!', 'success');
             })();
         });
     }

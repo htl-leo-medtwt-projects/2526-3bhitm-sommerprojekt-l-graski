@@ -81,10 +81,12 @@ const OreonAPI = {
         if (configurationSnapshot) body.configuration_snapshot = configurationSnapshot;
         if (unitPrice !== null && unitPrice !== undefined) body.unit_price = unitPrice;
 
-        return this._fetch(`${API_BASE}/cart.php?action=add`, {
+        const data = await this._fetch(`${API_BASE}/cart.php?action=add`, {
             method: 'POST',
             body: JSON.stringify(body)
         });
+        updateCartBadge();
+        return data;
     },
 
     async getCart() {
@@ -125,284 +127,75 @@ const OreonAPI = {
     },
 
     async _fetch(url, options = {}) {
-        const getBody = () => {
-            if (!options || !options.body) return null;
-            try {
-                return JSON.parse(options.body);
-            } catch (err) {
-                return null;
-            }
+        const fetchOptions = {
+            method: options.method || 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
         };
 
-        const body = getBody();
-        try {
-            // =====KI=====
-            if (url.includes('products.php')) {
-                const actionMatch = url.match(/action=([^&]+)/);
-                const action = actionMatch ? actionMatch[1] : 'list';
-
-                if (action === 'list') {
-                    return { products: (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [] };
-                }
-
-                if (action === 'detail') {
-                    const slugMatch = url.match(/slug=([^&]+)/);
-                    const slug = slugMatch ? decodeURIComponent(slugMatch[1]) : null;
-                    const list = (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [];
-                    const product = list.find(p => p.slug === slug) || null;
-                    return { product };
-                }
-                // ============
-
-                if (action === 'categories') {
-                    const list = (typeof PLACEHOLDER_PRODUCTS !== 'undefined') ? PLACEHOLDER_PRODUCTS : [];
-                    const categories = [];
-                    list.forEach(p => {
-                        if (!categories.find(c => c.slug === p.category_slug)) {
-                            categories.push({ id: p.category_id, name: p.category_name, slug: p.category_slug });
-                        }
-                    });
-                    return { categories };
-                }
-
-                if (action === 'options') {
-                    if (typeof PLACEHOLDER_OPTIONS !== 'undefined') {
-                        return { options: PLACEHOLDER_OPTIONS };
-                    }
-                    return { options: {} };
-                }
-            }
-
-            // =====KI=====
-            if (url.includes('auth.php')) {
-                const actionMatch = url.match(/action=([^&]+)/);
-                const action = actionMatch ? actionMatch[1] : null;
-
-                if (action === 'login') {
-                    const email = body?.email;
-                    const password = body?.password;
-                    if (email === 'admin@admin' && password === 'admin') {
-                        const adminUser = { id: 0, email: 'admin@admin', first_name: 'Admin', last_name: '' };
-                        return { user: adminUser };
-                    }
-
-                    const demoUsers = JSON.parse(localStorage.getItem('oreon_users') || '[]');
-                    const found = demoUsers.find(u => u.email === email && u.password === password);
-                    if (found) return { user: { id: found.id, email: found.email, first_name: found.first_name, last_name: found.last_name } };
-                    throw { status: 401, error: 'Ungültige Anmeldedaten.' };
-                }
-
-                if (action === 'register') {
-                    const users = JSON.parse(localStorage.getItem('oreon_users') || '[]');
-                    const newUser = { id: Date.now(), first_name: body.first_name, last_name: body.last_name, email: body.email, password: body.password };
-                    users.push(newUser);
-                    localStorage.setItem('oreon_users', JSON.stringify(users));
-                    return { user: { id: newUser.id, email: newUser.email, first_name: newUser.first_name, last_name: newUser.last_name } };
-                }
-                // ============
-
-                if (action === 'logout') {
-                    return { success: true };
-                }
-
-                if (action === 'me') {
-                    const me = LocalStore.getUser();
-                    return { user: me };
-                }
-
-                if (action === 'update') {
-                    const updated = body;
-                    LocalStore.setUser(updated);
-                    return { user: updated };
-                }
-
-                if (action === 'delete') {
-                    LocalStore.clearUser();
-                    return { success: true };
-                }
-            }
-
-            // =====KI=====
-            if (url.includes('configurations.php')) {
-                const actionMatch = url.match(/action=([^&]+)/);
-                const action = actionMatch ? actionMatch[1] : null;
-
-                if (action === 'save') {
-                    const saved = LocalStore.saveConfiguration(body);
-                    return { configuration: saved };
-                }
-
-                if (action === 'list') {
-                    return { configurations: LocalStore.getConfigurations() };
-                }
-
-                if (action === 'detail') {
-                    const idMatch = url.match(/id=([^&]+)/);
-                    const id = idMatch ? parseInt(idMatch[1], 10) : null;
-                    const configs = LocalStore.getConfigurations();
-                    return { configuration: configs.find(c => c.id === id) || null };
-                }
-
-                if (action === 'delete') {
-                    LocalStore.deleteConfiguration(body.id);
-                    return { success: true };
-                }
-            }
-
-            if (url.includes('cart.php')) {
-                const actionMatch = url.match(/action=([^&]+)/);
-                const action = actionMatch ? actionMatch[1] : null;
-
-                if (action === 'add') {
-                    const item = body;
-                    const added = LocalStore.addToCart(item);
-                    return { cart: added };
-                }
-
-                if (action === 'list') {
-                    return { cart: LocalStore.getCart() };
-                }
-
-                if (action === 'update') {
-                    LocalStore.updateCartQuantity(body.id, body.quantity);
-                    return { cart: LocalStore.getCart() };
-                }
-
-                if (action === 'remove') {
-                    LocalStore.removeFromCart(body.id);
-                    return { cart: LocalStore.getCart() };
-                }
-
-                if (action === 'count') {
-                    return { count: LocalStore.getCartCount() };
-                }
-            }
-            // ============
-
-            if (url.includes('orders.php')) {
-                const actionMatch = url.match(/action=([^&]+)/);
-                const action = actionMatch ? actionMatch[1] : null;
-
-                if (action === 'create') {
-                    const order = LocalStore.addOrder(body);
-                    return { order };
-                }
-
-                if (action === 'list') {
-                    return { orders: LocalStore.getOrders() };
-                }
-
-                if (action === 'detail') {
-                    const idMatch = url.match(/id=([^&]+)/);
-                    const id = idMatch ? parseInt(idMatch[1], 10) : null;
-                    const order = LocalStore.getOrders().find(o => o.id === id) || null;
-                    return { order };
-                }
-            }
-
-            return {};
-        } catch (err) {
-            throw { status: err.status || 500, error: err.error || String(err) };
+        if (options.body) {
+            fetchOptions.body = typeof options.body === 'string'
+                ? options.body
+                : JSON.stringify(options.body);
         }
+
+        const response = await fetch(url, fetchOptions);
+        let data = null;
+
+        try {
+            data = await response.json();
+        } catch (err) {
+            data = null;
+        }
+
+        if (!response.ok) {
+            throw { status: response.status, error: data?.error || response.statusText };
+        }
+
+        return data || {};
     }
 };
+
+let currentUser = null;
+let userLoaded = false;
+
+async function getCurrentUser() {
+    if (userLoaded) return currentUser;
+    try {
+        const data = await OreonAPI.getMe();
+        currentUser = data?.user || null;
+    } catch (err) {
+        currentUser = null;
+    }
+    userLoaded = true;
+    return currentUser;
+}
+
+function setCurrentUser(user) {
+    currentUser = user || null;
+    userLoaded = true;
+}
 
 // =====KI=====
-const LocalStore = {
-    getUser() {
-        const data = localStorage.getItem('oreon_user');
-        return data ? JSON.parse(data) : null;
-    },
-    setUser(user) {
-        localStorage.setItem('oreon_user', JSON.stringify(user));
-    },
-    clearUser() {
-        localStorage.removeItem('oreon_user');
-    },
-    isLoggedIn() {
-        return !!this.getUser();
-    },
-
-    getCart() {
-        const data = localStorage.getItem('oreon_cart');
-        return data ? JSON.parse(data) : [];
-    },
-    setCart(items) {
-        localStorage.setItem('oreon_cart', JSON.stringify(items));
-        updateCartBadge();
-    },
-    addToCart(item) {
-        const cart = this.getCart();
-        cart.push({ ...item, id: Date.now(), quantity: item.quantity || 1 });
-        this.setCart(cart);
-        return cart;
-    },
-    removeFromCart(id) {
-        const cart = this.getCart().filter(item => item.id !== id);
-        this.setCart(cart);
-        return cart;
-    },
-    updateCartQuantity(id, quantity) {
-        const cart = this.getCart();
-        const item = cart.find(i => i.id === id);
-        if (item) item.quantity = Math.max(1, quantity);
-        this.setCart(cart);
-        return cart;
-    },
-    clearCart() {
-        this.setCart([]);
-    },
-    getCartCount() {
-        return this.getCart().reduce((sum, item) => sum + (item.quantity || 1), 0);
-    },
-
-    getConfigurations() {
-        const data = localStorage.getItem('oreon_configs');
-        return data ? JSON.parse(data) : [];
-    },
-    saveConfiguration(config) {
-        const configs = this.getConfigurations();
-        config.id = Date.now();
-        config.created_at = new Date().toISOString();
-        configs.push(config);
-        localStorage.setItem('oreon_configs', JSON.stringify(configs));
-        return config;
-    },
-    deleteConfiguration(id) {
-        const configs = this.getConfigurations().filter(c => c.id !== id);
-        localStorage.setItem('oreon_configs', JSON.stringify(configs));
-        return configs;
-    },
-
-    // Orders
-    getOrders() {
-        const data = localStorage.getItem('oreon_orders');
-        return data ? JSON.parse(data) : [];
-    },
-    addOrder(order) {
-        const orders = this.getOrders();
-        order.id = Date.now();
-        order.order_number = 'ORN-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-        order.status = 'pending';
-        order.created_at = new Date().toISOString();
-        orders.unshift(order);
-        localStorage.setItem('oreon_orders', JSON.stringify(orders));
-        return order;
-    }
-};
-// ============
+function bumpCartBadge(delta) {
+    document.querySelectorAll('#cartCount').forEach(element => {
+        const current = parseInt(element.textContent || '0', 10) || 0;
+        const next = Math.max(0, current + delta);
+        element.textContent = next;
+        element.style.display = next > 0 ? 'flex' : 'none';
+    });
+}
 
 async function updateCartBadge() {
-    let count = LocalStore.getCartCount();
-
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getCartCount();
-            if (typeof data?.count === 'number') {
-                count = data.count;
-            }
-        } catch (err) {
+    let count = 0;
+    try {
+        const data = await OreonAPI.getCartCount();
+        if (typeof data?.count === 'number') {
+            count = data.count;
         }
+    } catch (err) {
     }
 
     document.querySelectorAll('#cartCount').forEach(element => {
@@ -411,7 +204,6 @@ async function updateCartBadge() {
     });
 }
 
-// =====KI=====
 function formatPrice(price) {
     return '€ ' + parseFloat(price).toFixed(2).replace('.', ',');
 }
