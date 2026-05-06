@@ -66,8 +66,8 @@ function buildCartItem(item) {
         item.shape_name
     ].filter(Boolean);
 
-    if (item.engraving_text) {
-        configParts.push(`Gravur: ${item.engraving_text}`);
+    if (item.jewel_name) {
+        configParts.push(`Juwel: ${item.jewel_name}`);
     }
 
     const quantity = normalizeCartQuantity(item.quantity || 1);

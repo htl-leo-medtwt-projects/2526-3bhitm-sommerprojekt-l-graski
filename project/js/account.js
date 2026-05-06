@@ -136,7 +136,7 @@ async function loadConfigurations() {
 
     list.innerHTML = configs.map(config => {
         const icon = config.category_slug === 'ringe' ? '💍' : '⌚';
-        const details = [config.type_name, config.material_name, config.size_label, config.shape_name].filter(Boolean).join(' · ');
+        const details = [config.type_name, config.material_name, config.size_label, config.shape_name, config.jewel_name].filter(Boolean).join(' · ');
 
         return `
             <div class="config-card">

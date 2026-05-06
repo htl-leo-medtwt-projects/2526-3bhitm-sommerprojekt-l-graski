@@ -3,42 +3,42 @@ const PLACEHOLDER_PRODUCTS = [
     {
         id: 1, category_id: 1, name: 'Eternal Band', slug: 'eternal-band',
         description: 'Ein zeitloser Ring, der Eleganz und Schlichtheit vereint. Perfekt als Ehering oder als täglicher Begleiter.',
-        base_price: 89.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
+        base_price: 489.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
     },
     {
         id: 2, category_id: 1, name: 'Nova Solitaire', slug: 'nova-solitaire',
         description: 'Der Nova Solitaire besticht durch seine klare Linie und den einzelnen, brillant gefassten Stein.',
-        base_price: 149.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
+        base_price: 629.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
     },
     {
         id: 3, category_id: 1, name: 'Regalia Signet', slug: 'regalia-signet',
         description: 'Ein kraftvoller Siegelring mit individueller Gravur-Option. Statement und Tradition in einem.',
-        base_price: 119.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
+        base_price: 569.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
     },
     {
         id: 4, category_id: 1, name: 'Aura Twist', slug: 'aura-twist',
         description: 'Spielerisch verdrehtes Design – der Aura Twist ist modern, mutig und einzigartig.',
-        base_price: 109.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
+        base_price: 539.00, image_url: '', category_name: 'Ringe', category_slug: 'ringe'
     },
     {
         id: 5, category_id: 2, name: 'Luxe Chain', slug: 'luxe-chain',
         description: 'Ein elegantes Gliederarmband, das sich perfekt an das Handgelenk schmiegt.',
-        base_price: 129.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
+        base_price: 589.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
     },
     {
         id: 6, category_id: 2, name: 'Celestia Bangle', slug: 'celestia-bangle',
         description: 'Ein schlanker Armreif mit fließender Form – minimalistisch und doch auffallend.',
-        base_price: 99.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
+        base_price: 529.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
     },
     {
         id: 7, category_id: 2, name: 'Vega Tennis', slug: 'vega-tennis',
         description: 'Das Vega Tennis-Armband glänzt mit einer durchgehenden Reihe funkelnder Steine.',
-        base_price: 199.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
+        base_price: 579.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
     },
     {
         id: 8, category_id: 2, name: 'Orion Cuff', slug: 'orion-cuff',
         description: 'Ein breiter, offener Armreif mit markanter Oberfläche. Bold und selbstbewusst.',
-        base_price: 159.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
+        base_price: 689.00, image_url: '', category_name: 'Armbänder', category_slug: 'armbaender'
     }
 ];
 
@@ -60,6 +60,30 @@ function createProductCard(product) {
         ? `<img src="${safeImageUrl}" alt="${safeName}">`
         : `<span class="placeholder-icon"><i class="fas ${iconClass}"></i></span>`;
 
+    const presetPrice = (function computePresetPrice() {
+        if (product.card_price !== undefined && product.card_price !== null) {
+            return parseFloat(product.card_price);
+        }
+        const base = parseFloat(product.base_price || 0);
+        if (typeof PLACEHOLDER_OPTIONS === 'undefined') return base;
+        const cat = product.category_slug || 'ringe';
+        const opts = PLACEHOLDER_OPTIONS[cat] || PLACEHOLDER_OPTIONS.ringe || {};
+        const types = opts.types || [];
+        const sizes = opts.sizes || [];
+        const shapes = opts.shapes || [];
+        const materials = PLACEHOLDER_OPTIONS.materials || [];
+        const jewels = PLACEHOLDER_OPTIONS.jewels || [];
+
+        let subtotal = base;
+        if (types.length) subtotal += parseFloat(types[0].price_modifier || 0);
+        if (materials.length) subtotal += parseFloat(materials[0].price_modifier || 0);
+        if (sizes.length) subtotal += parseFloat(sizes[0].price_modifier || 0);
+        if (shapes.length) subtotal += parseFloat(shapes[0].price_modifier || 0);
+        if (jewels.length) subtotal += parseFloat(jewels[0].price_modifier || 0);
+
+        return Math.round(subtotal * 0.8 * 100) / 100;
+    })();
+
     return `
         <div class="product-card" data-slug="${safeSlug}" data-category="${safeCategory}" role="button" tabindex="0">
             <div class="product-card-img">
@@ -70,7 +94,7 @@ function createProductCard(product) {
                 <h3 class="product-card-title">${safeName}</h3>
                 <p class="product-card-desc">${safeDescription}</p>
                 <div class="product-card-footer">
-                    <span class="product-price"><small>ab</small><span class="product-price-value">${formatPrice(product.base_price)}</span></span>
+                    <span class="product-price"><small>ab</small><span class="product-price-value">${formatPrice(presetPrice)}</span></span>
                     <span class="btn btn-secondary btn-sm">Konfigurieren</span>
                 </div>
             </div>

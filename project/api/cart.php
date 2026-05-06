@@ -9,7 +9,7 @@ function fetchCart(mysqli $conn, int $userId): array
 {
     $sql = 'SELECT ci.id, ci.product_id, ci.configuration_id, ci.unit_price, ci.configuration_snapshot, ci.quantity,
             p.name AS product_name, p.base_price, p.image_url, c.slug AS category_slug,
-            cfg.engraving_text, ot.name AS type_name, om.name AS material_name, os.label AS size_label, osh.name AS shape_name
+            oj.name AS jewel_name, ot.name AS type_name, om.name AS material_name, os.label AS size_label, osh.name AS shape_name
             FROM cart_items ci
             JOIN products p ON p.id = ci.product_id
             JOIN categories c ON c.id = p.category_id
@@ -18,6 +18,7 @@ function fetchCart(mysqli $conn, int $userId): array
             LEFT JOIN option_materials om ON om.id = cfg.material_id
             LEFT JOIN option_sizes os ON os.id = cfg.size_id
             LEFT JOIN option_shapes osh ON osh.id = cfg.shape_id
+            LEFT JOIN option_jewels oj ON oj.id = cfg.jewel_id
             WHERE ci.user_id = ?
             ORDER BY ci.id DESC';
 
@@ -50,7 +51,7 @@ function fetchCart(mysqli $conn, int $userId): array
             'material_name' => $row['material_name'],
             'size_label' => $row['size_label'],
             'shape_name' => $row['shape_name'],
-            'engraving_text' => $row['engraving_text'],
+            'jewel_name' => $row['jewel_name'],
             'configuration_snapshot' => $snapshot
         ];
 
