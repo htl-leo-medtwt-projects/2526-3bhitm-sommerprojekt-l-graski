@@ -1968,6 +1968,17 @@ input.quantity-value {
   border-radius: var(--radius-sm);
 }
 
+.order-card.is-clickable {
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.order-card.is-clickable:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.25);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
 .order-header {
   display: flex;
   justify-content: space-between;
@@ -2470,6 +2481,7 @@ input.quantity-value {
   padding: 40px;
   max-width: 500px;
   width: 90%;
+  position: relative;
   transform: scale(0.9) translateY(20px);
   transition: transform var(--transition);
 }
@@ -2496,6 +2508,90 @@ input.quantity-value {
 }
 
 .modal-close:hover {
+  color: var(--gold);
+}
+
+.order-detail-modal {
+  max-width: 760px;
+}
+
+.order-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.order-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  color: var(--champagne-dark);
+  font-size: 13px;
+}
+
+.order-detail-total {
+  text-align: right;
+  min-width: 140px;
+}
+
+.order-detail-total span {
+  color: var(--champagne-dark);
+  font-size: 13px;
+  display: block;
+}
+
+.order-detail-total strong {
+  color: var(--gold);
+  font-size: 20px;
+  display: block;
+}
+
+.order-detail-block {
+  margin-top: 18px;
+}
+
+.order-detail-block h3 {
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.order-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 14px;
+  background: rgba(10, 31, 19, 0.35);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: var(--radius-sm);
+}
+
+.order-item-details {
+  color: var(--champagne-dark);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.order-item-price {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--champagne-dark);
+}
+
+.order-item-price strong {
   color: var(--gold);
 }
 

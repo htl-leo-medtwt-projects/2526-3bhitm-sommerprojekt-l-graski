@@ -200,7 +200,7 @@
 
               <div class="account-section-divider"></div>
 
-              <h3 class="u-mt-12">Passwort ändern</h3>
+              <h3 class="u-mt-12 account-section-title">Passwort ändern</h3>
               <form id="changePasswordForm" class="u-mt-12">
                 <div class="form-group">
                   <label class="form-label" for="currentPassword">Aktuelles Passwort</label>
@@ -306,6 +306,17 @@
           <button type="button" class="btn btn-danger" id="confirmDeleteAccount">
             Account löschen
           </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="orderDetailModal">
+      <div class="modal order-detail-modal">
+        <button class="modal-close" id="closeOrderDetail" aria-label="Schliessen">
+          &times;
+        </button>
+        <div id="orderDetailContent">
+          <div class="loader"><div class="loader-spinner"></div></div>
         </div>
       </div>
     </div>

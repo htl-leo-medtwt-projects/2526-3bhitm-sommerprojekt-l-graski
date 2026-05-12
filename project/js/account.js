@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadProfile();
         initChangePasswordForm();
         initDeleteAccount();
+        initOrderDetailModal();
 
         if (window.location.hash === '#orders') {
             switchSection('orders');
@@ -253,21 +254,133 @@ async function loadOrders() {
             delivered: 'Zugestellt', cancelled: 'Storniert'
         };
         const date = new Date(order.created_at).toLocaleDateString('de-AT');
+        const itemsCount = order.items_count ? `${order.items_count} Artikel` : '';
 
         return `
-            <div class="order-card">
+            <div class="order-card is-clickable" data-order-id="${order.id}">
                 <div class="order-header">
                     <span class="order-number">${escapeHtml(order.order_number)}</span>
                     <span class="order-status ${order.status}">${statusLabels[order.status] || order.status}</span>
                 </div>
                 <div class="order-details">
                     <span>${date}</span>
-                    <span>${order.items ? order.items.length + ' Artikel' : ''}</span>
+                    <span>${itemsCount}</span>
                     <span class="order-total">${formatPrice(order.total_price)}</span>
                 </div>
             </div>
         `;
     }).join('');
+
+    list.querySelectorAll('.order-card[data-order-id]').forEach(card => {
+        card.addEventListener('click', () => {
+            const orderId = parseInt(card.dataset.orderId || '0', 10);
+            if (!orderId) return;
+            openOrderDetailModal(orderId);
+        });
+    });
+}
+
+let orderDetailModal = null;
+let orderDetailContent = null;
+
+function initOrderDetailModal() {
+    orderDetailModal = document.getElementById('orderDetailModal');
+    orderDetailContent = document.getElementById('orderDetailContent');
+
+    const closeBtn = document.getElementById('closeOrderDetail');
+    const close = () => orderDetailModal?.classList.remove('active');
+
+    closeBtn?.addEventListener('click', close);
+    orderDetailModal?.addEventListener('click', (event) => {
+        if (event.target === orderDetailModal) close();
+    });
+}
+
+async function openOrderDetailModal(orderId) {
+    if (!orderDetailModal || !orderDetailContent) return;
+
+    orderDetailContent.innerHTML = '<div class="loader"><div class="loader-spinner"></div></div>';
+    orderDetailModal.classList.add('active');
+
+    let order = null;
+    let items = [];
+    try {
+        const data = await OreonAPI.getOrder(orderId);
+        order = data.order || null;
+        items = data.items || [];
+    } catch (err) {
+        showToast(err?.error || 'Bestelldetails konnten nicht geladen werden.', 'error');
+        orderDetailModal.classList.remove('active');
+        return;
+    }
+
+    if (!order) {
+        orderDetailContent.innerHTML = '<p>Bestellung nicht gefunden.</p>';
+        return;
+    }
+
+    const statusLabels = {
+        pending: 'Ausstehend', confirmed: 'Bestätigt',
+        processing: 'In Bearbeitung', shipped: 'Versandt',
+        delivered: 'Zugestellt', cancelled: 'Storniert'
+    };
+
+    const createdAt = new Date(order.created_at).toLocaleString('de-AT');
+    const shipping = [order.shipping_street, order.shipping_zip, order.shipping_city, order.shipping_country].filter(Boolean).join(', ');
+
+    //=====KI=====
+    const itemsHtml = items.map(item => {
+        const details = [item.type_name, item.material_name, item.size_label, item.shape_name, item.jewel_name]
+            .filter(Boolean)
+            .map(escapeHtml)
+            .join(' · ');
+        const unit = parseFloat(item.unit_price ?? 0);
+        const qty = parseInt(item.quantity ?? 1, 10) || 1;
+        const lineTotal = unit * qty;
+        return `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <strong>${escapeHtml(item.product_name || 'Produkt')}</strong>
+                    <div class="order-item-details">${details || 'Keine Details'}</div>
+                </div>
+                <div class="order-item-price">
+                    <span>${qty} × ${formatPrice(unit)}</span>
+                    <strong>${formatPrice(lineTotal)}</strong>
+                </div>
+            </div>
+        `;
+    }).join('');
+    //============
+
+    orderDetailContent.innerHTML = `
+        <div class="order-detail-header">
+            <div>
+                <h2>${escapeHtml(order.order_number)}</h2>
+                <div class="order-detail-meta">
+                    <span>${createdAt}</span>
+                    <span class="order-status ${order.status}">${statusLabels[order.status] || order.status}</span>
+                </div>
+            </div>
+            <div class="order-detail-total">
+                <span>Gesamt</span>
+                <strong>${formatPrice(order.total_price)}</strong>
+            </div>
+        </div>
+        <div class="order-detail-block">
+            <h3>Lieferadresse</h3>
+            <p>${escapeHtml(shipping || 'Keine Lieferadresse hinterlegt.')}</p>
+        </div>
+        <div class="order-detail-block">
+            <h3>Zahlung</h3>
+            <p>${escapeHtml(order.payment_method || 'Unbekannt')}</p>
+        </div>
+        <div class="order-detail-block">
+            <h3>Artikel</h3>
+            <div class="order-item-list">
+                ${itemsHtml || '<p>Keine Artikel gefunden.</p>'}
+            </div>
+        </div>
+    `;
 }
 
 async function loadProfile() {

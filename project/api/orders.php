@@ -43,6 +43,40 @@ switch ($action) {
             }
             $stmt->close();
 
+            $orderId = (int) $conn->insert_id;
+            
+            //=====KI=====
+            $stmt = $conn->prepare('SELECT ci.product_id, ci.configuration_snapshot, ci.quantity, ci.unit_price, p.name AS product_name
+                FROM cart_items ci
+                JOIN products p ON p.id = ci.product_id
+                WHERE ci.user_id = ?');
+            $stmt->bind_param('i', $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $items = [];
+            while ($row = $result->fetch_assoc()) {
+                $items[] = $row;
+            }
+            $stmt->close();
+
+            if (!empty($items)) {
+                $stmt = $conn->prepare('INSERT INTO order_items (order_id, product_id, product_name, configuration_snapshot, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)');
+                foreach ($items as $item) {
+                    $productId = (int) $item['product_id'];
+                    $productName = $item['product_name'];
+                    $quantity = (int) $item['quantity'];
+                    $unitPrice = (float) $item['unit_price'];
+                    $snapshot = $item['configuration_snapshot'];
+                    $stmt->bind_param('iissid', $orderId, $productId, $productName, $snapshot, $quantity, $unitPrice);
+                    if (!$stmt->execute()) {
+                        $stmt->close();
+                        jsonResponse(['error' => 'Bestellpositionen konnten nicht gespeichert werden.'], 500);
+                    }
+                }
+                $stmt->close();
+            }
+            //============
+
             $stmt = $conn->prepare('DELETE FROM cart_items WHERE user_id = ?');
             $stmt->bind_param('i', $userId);
             $stmt->execute();
@@ -53,7 +87,13 @@ switch ($action) {
 
     case 'list': {
             $userId = requireAuth();
-            $stmt = $conn->prepare('SELECT id, order_number, total_price, status, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC');
+            $stmt = $conn->prepare('SELECT o.id, o.order_number, o.total_price, o.status, o.created_at,
+                COALESCE(SUM(oi.quantity), 0) AS items_count
+                FROM orders o
+                LEFT JOIN order_items oi ON oi.order_id = o.id
+                WHERE o.user_id = ?
+                GROUP BY o.id, o.order_number, o.total_price, o.status, o.created_at
+                ORDER BY o.created_at DESC');
             $stmt->bind_param('i', $userId);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -62,6 +102,7 @@ switch ($action) {
             while ($row = $result->fetch_assoc()) {
                 $row['id'] = (int) $row['id'];
                 $row['total_price'] = (float) $row['total_price'];
+                $row['items_count'] = (int) $row['items_count'];
                 $orders[] = $row;
             }
 
@@ -88,7 +129,47 @@ switch ($action) {
                 $order['total_price'] = (float) $order['total_price'];
             }
 
-            jsonResponse(['order' => $order]);
+            $items = [];
+            if ($order) {
+                $stmt = $conn->prepare('SELECT oi.id, oi.product_id, oi.product_name, oi.configuration_snapshot, oi.quantity, oi.unit_price, p.image_url
+                    FROM order_items oi
+                    LEFT JOIN products p ON p.id = oi.product_id
+                    WHERE oi.order_id = ?
+                    ORDER BY oi.id ASC');
+                $stmt->bind_param('i', $id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    $snapshot = null;
+                    if (!empty($row['configuration_snapshot'])) {
+                        $decoded = json_decode($row['configuration_snapshot'], true);
+                        if (is_array($decoded)) {
+                            $snapshot = $decoded;
+                        }
+                    }
+
+                    $item = [
+                        'id' => (int) $row['id'],
+                        'product_id' => (int) $row['product_id'],
+                        'product_name' => $row['product_name'],
+                        'quantity' => (int) $row['quantity'],
+                        'unit_price' => (float) $row['unit_price'],
+                        'image_url' => $row['image_url'],
+                        'configuration_snapshot' => $snapshot
+                    ];
+
+                    if ($snapshot) {
+                        foreach ($snapshot as $key => $value) {
+                            $item[$key] = $value;
+                        }
+                    }
+
+                    $items[] = $item;
+                }
+                $stmt->close();
+            }
+
+            jsonResponse(['order' => $order, 'items' => $items]);
         }
 
     default:
