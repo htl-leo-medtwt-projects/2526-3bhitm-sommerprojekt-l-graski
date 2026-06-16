@@ -1,0 +1,210 @@
+@startuml
+!define primary_key(x) <b><color:#000088><u>x</u></color></b>
+!define foreign_key(x) <color:#008800><i>x</i></color>
+!define not_null(x) <u>x</u>
+
+' Hide the spot
+hide circle
+' Avoid problems with angle brackets
+skinparam linetype ortho
+
+' ============================================
+' TABLES
+' ============================================
+
+entity "users" as users {
+  * id : int <<PK>>
+  --
+  * email : varchar(255) <<UNIQUE>>
+  * password_hash : varchar(255)
+  * first_name : varchar(100)
+  * last_name : varchar(100)
+  phone : varchar(30)
+  street : varchar(255)
+  zip : varchar(10)
+  city : varchar(100)
+  country : varchar(100)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "auth_events" as auth_events {
+  * id : bigint <<PK>>
+  --
+  user_id : int <<FK>>
+  email : varchar(255)
+  * event : enum('register','login','logout','failed_login')
+  ip_address : varchar(45)
+  user_agent : varchar(255)
+  created_at : timestamp
+}
+
+entity "sessions" as sessions {
+  * id : varchar(128) <<PK>>
+  --
+  user_id : int <<FK>>
+  data : text
+  created_at : timestamp
+  expires_at : timestamp
+}
+
+entity "categories" as categories {
+  * id : int <<PK>>
+  --
+  * name : varchar(100)
+  * slug : varchar(100) <<UNIQUE>>
+  description : text
+  image_url : varchar(500)
+}
+
+entity "products" as products {
+  * id : int <<PK>>
+  --
+  * category_id : int <<FK>>
+  * name : varchar(255)
+  * slug : varchar(255) <<UNIQUE>>
+  description : text
+  * base_price : decimal(10,2)
+  image_url : varchar(500)
+  is_active : tinyint(1)
+  created_at : timestamp
+}
+
+entity "configurations" as configurations {
+  * id : int <<PK>>
+  --
+  * user_id : int <<FK>>
+  * product_id : int <<FK>>
+  name : varchar(255)
+  type_id : int <<FK>>
+  material_id : int <<FK>>
+  size_id : int <<FK>>
+  shape_id : int <<FK>>
+  jewel_id : int <<FK>>
+  total_price : decimal(10,2)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "cart_items" as cart_items {
+  * id : int <<PK>>
+  --
+  * user_id : int <<FK>>
+  * product_id : int <<FK>>
+  configuration_id : int <<FK>>
+  unit_price : decimal(10,2)
+  configuration_snapshot : json
+  quantity : int
+  created_at : timestamp
+}
+
+entity "orders" as orders {
+  * id : int <<PK>>
+  --
+  * user_id : int <<FK>>
+  * order_number : varchar(20) <<UNIQUE>>
+  * total_price : decimal(10,2)
+  * status : enum('pending','confirmed','processing','shipped','delivered','cancelled')
+  shipping_street : varchar(255)
+  shipping_zip : varchar(10)
+  shipping_city : varchar(100)
+  shipping_country : varchar(100)
+  payment_method : varchar(50)
+  notes : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "order_items" as order_items {
+  * id : int <<PK>>
+  --
+  * order_id : int <<FK>>
+  * product_id : int <<FK>>
+  product_name : varchar(255)
+  configuration_snapshot : json
+  quantity : int
+  * unit_price : decimal(10,2)
+}
+
+entity "option_types" as option_types {
+  * id : int <<PK>>
+  --
+  * category_id : int <<FK>>
+  * name : varchar(100)
+  * slug : varchar(100)
+  price_modifier : decimal(10,2)
+}
+
+entity "option_materials" as option_materials {
+  * id : int <<PK>>
+  --
+  * name : varchar(100)
+  * slug : varchar(100) <<UNIQUE>>
+  price_modifier : decimal(10,2)
+  color_hex : varchar(7)
+}
+
+entity "option_sizes" as option_sizes {
+  * id : int <<PK>>
+  --
+  * category_id : int <<FK>>
+  * label : varchar(50)
+  * value : varchar(20)
+  price_modifier : decimal(10,2)
+}
+
+entity "option_shapes" as option_shapes {
+  * id : int <<PK>>
+  --
+  * category_id : int <<FK>>
+  * name : varchar(100)
+  * slug : varchar(100)
+  price_modifier : decimal(10,2)
+}
+
+entity "option_jewels" as option_jewels {
+  * id : int <<PK>>
+  --
+  * name : varchar(100) <<UNIQUE>>
+  * slug : varchar(120) <<UNIQUE>>
+  price_modifier : decimal(10,2)
+  color_hex : varchar(7)
+  is_special : tinyint(1)
+}
+
+' ============================================
+' RELATIONSHIPS
+' ============================================
+
+' Users -> related tables
+users ||--o{ auth_events : "user_id"
+users ||--o{ sessions : "user_id"
+users ||--o{ configurations : "user_id"
+users ||--o{ cart_items : "user_id"
+users ||--o{ orders : "user_id"
+
+' Categories -> related tables
+categories ||--o{ products : "category_id"
+categories ||--o{ option_types : "category_id"
+categories ||--o{ option_sizes : "category_id"
+categories ||--o{ option_shapes : "category_id"
+
+' Products -> related tables
+products ||--o{ configurations : "product_id"
+products ||--o{ cart_items : "product_id"
+products ||--o{ order_items : "product_id"
+
+' Orders -> order_items
+orders ||--o{ order_items : "order_id"
+
+' Configurations -> cart_items
+configurations ||--o{ cart_items : "configuration_id"
+
+' Configuration option tables
+option_types ||--o{ configurations : "type_id"
+option_materials ||--o{ configurations : "material_id"
+option_sizes ||--o{ configurations : "size_id"
+option_shapes ||--o{ configurations : "shape_id"
+option_jewels ||--o{ configurations : "jewel_id"
+
+@enduml
