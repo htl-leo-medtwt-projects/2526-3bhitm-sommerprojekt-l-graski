@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initGSAPAnimations();
     initHeroParticles();
     initContactForm();
+    initPasswordToggles();
     updateCartBadge();
 });
 
@@ -222,4 +223,30 @@ function escapeHtml(str) {
 
 function getUrlParam(name) {
     return new URLSearchParams(window.location.search).get(name);
+}
+
+function initPasswordToggles(root = document) {
+    const buttons = root.querySelectorAll('[data-password-target]');
+    if (!buttons.length) return;
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-password-target');
+            if (!targetId) return;
+            const input = root.getElementById ? root.getElementById(targetId) : document.getElementById(targetId);
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            }
+
+            btn.setAttribute('aria-pressed', String(isPassword));
+            btn.setAttribute('aria-label', isPassword ? 'Passwort ausblenden' : 'Passwort anzeigen');
+        });
+    });
 }

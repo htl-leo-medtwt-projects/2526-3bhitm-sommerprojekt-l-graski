@@ -100,6 +100,10 @@ h3 {
   padding: 80px 0;
 }
 
+.section-top-divider {
+  border-top: 1px solid rgba(201, 168, 76, 0.12);
+}
+
 .section-title {
   text-align: center;
   margin-bottom: 60px;
@@ -227,6 +231,11 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.account-section-divider {
+  margin: 24px 0;
+  border-top: 1px solid rgba(201, 168, 76, 0.14);
 }
 
 .account-danger-text {
@@ -930,6 +939,8 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
 }
 
 .product-price {
@@ -1498,6 +1509,35 @@ h3 {
   opacity: 0.4;
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field .form-input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  color: rgba(245, 232, 209, 0.65);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--gold);
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
 select.form-input {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' fill='none' stroke-width='2'/%3E%3C/svg%3E");
@@ -1703,10 +1743,20 @@ select.form-input {
 }
 
 .quantity-value {
-  width: 32px;
+  width: 44px;
   text-align: center;
   font-weight: 600;
   color: var(--champagne);
+}
+
+input.quantity-value {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  outline: none;
+  font: inherit;
+  cursor: text;
+  appearance: textfield;
 }
 
 .cart-summary {
@@ -1916,6 +1966,17 @@ select.form-input {
   background: rgba(10, 31, 19, 0.3);
   border: 1px solid rgba(201, 168, 76, 0.08);
   border-radius: var(--radius-sm);
+}
+
+.order-card.is-clickable {
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.order-card.is-clickable:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.25);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .order-header {
@@ -2420,6 +2481,7 @@ select.form-input {
   padding: 40px;
   max-width: 500px;
   width: 90%;
+  position: relative;
   transform: scale(0.9) translateY(20px);
   transition: transform var(--transition);
 }
@@ -2446,6 +2508,90 @@ select.form-input {
 }
 
 .modal-close:hover {
+  color: var(--gold);
+}
+
+.order-detail-modal {
+  max-width: 760px;
+}
+
+.order-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.order-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  color: var(--champagne-dark);
+  font-size: 13px;
+}
+
+.order-detail-total {
+  text-align: right;
+  min-width: 140px;
+}
+
+.order-detail-total span {
+  color: var(--champagne-dark);
+  font-size: 13px;
+  display: block;
+}
+
+.order-detail-total strong {
+  color: var(--gold);
+  font-size: 20px;
+  display: block;
+}
+
+.order-detail-block {
+  margin-top: 18px;
+}
+
+.order-detail-block h3 {
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.order-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 14px;
+  background: rgba(10, 31, 19, 0.35);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: var(--radius-sm);
+}
+
+.order-item-details {
+  color: var(--champagne-dark);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.order-item-price {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--champagne-dark);
+}
+
+.order-item-price strong {
   color: var(--gold);
 }
 

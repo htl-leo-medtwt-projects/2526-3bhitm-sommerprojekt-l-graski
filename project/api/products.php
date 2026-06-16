@@ -52,7 +52,7 @@ switch ($action) {
                 'materials' => $opts['materials'],
                 'sizes' => $opts['sizes'][$categoryId] ?? [],
                 'shapes' => $opts['shapes'][$categoryId] ?? [],
-                'engravings' => $opts['engravings']
+                'jewels' => $opts['jewels']
             ]);
         }
 

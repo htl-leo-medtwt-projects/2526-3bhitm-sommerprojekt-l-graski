@@ -1,27 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (!LocalStore.isLoggedIn()) {
-        window.location.href = 'login.html';
-        return;
-    }
+    (async () => {
+        const user = await getCurrentUser();
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
 
-    initAccountNav();
-    loadConfigurations();
-    loadOrders();
-    loadProfile();
-    initDeleteAccount();
+        initAccountNav();
+        loadConfigurations();
+        loadOrders();
+        loadProfile();
+        initChangePasswordForm();
+        initDeleteAccount();
+        initOrderDetailModal();
 
-    if (window.location.hash === '#orders') {
-        switchSection('orders');
-    }
+        if (window.location.hash === '#orders') {
+            switchSection('orders');
+        }
+    })();
 });
 
 function initDeleteAccount() {
     const btn = document.getElementById('deleteAccountBtn');
+    const modal = document.getElementById('deleteAccountModal');
+    const confirmBtn = document.getElementById('confirmDeleteAccount');
+    const cancelBtn = document.getElementById('cancelDeleteAccount');
     if (!btn) return;
 
-    btn.addEventListener('click', async () => {
-        const ok = confirm('Möchtest du deinen Account wirklich endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
-        if (!ok) return;
+    const openModal = () => {
+        if (modal) modal.classList.add('active');
+    };
+
+    const closeModal = () => {
+        if (modal) modal.classList.remove('active');
+    };
+
+    btn.addEventListener('click', () => {
+        openModal();
+    });
+
+    cancelBtn?.addEventListener('click', () => {
+        closeModal();
+    });
+
+    modal?.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+    });
+
+    confirmBtn?.addEventListener('click', async () => {
+        closeModal();
 
         try {
             if (typeof OreonAPI !== 'undefined') {
@@ -32,8 +59,8 @@ function initDeleteAccount() {
             return;
         }
 
-        LocalStore.clearUser();
-        LocalStore.clearCart();
+        setCurrentUser(null);
+        updateCartBadge();
         showToast('Account gelöscht', 'success');
         setTimeout(() => window.location.href = 'index.html', 600);
     });
@@ -51,7 +78,8 @@ function initAccountNav() {
                         }
                     } catch (err) {
                     } finally {
-                        LocalStore.clearUser();
+                        setCurrentUser(null);
+                        updateCartBadge();
                         showToast('Abgemeldet', 'info');
                         setTimeout(() => window.location.href = 'index.html', 500);
                     }
@@ -87,15 +115,12 @@ async function loadConfigurations() {
     if (!list) return;
 
     let configs = [];
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getConfigurations();
-            configs = data.configurations || [];
-        } catch (err) {
-            configs = LocalStore.getConfigurations();
-        }
-    } else {
-        configs = LocalStore.getConfigurations();
+    try {
+        const data = await OreonAPI.getConfigurations();
+        configs = data.configurations || [];
+    } catch (err) {
+        showToast(err?.error || 'Konfigurationen konnten nicht geladen werden.', 'error');
+        configs = [];
     }
 
     if (configs.length === 0) {
@@ -112,7 +137,7 @@ async function loadConfigurations() {
 
     list.innerHTML = configs.map(config => {
         const icon = config.category_slug === 'ringe' ? '💍' : '⌚';
-        const details = [config.type_name, config.material_name, config.size_label, config.shape_name].filter(Boolean).join(' · ');
+        const details = [config.type_name, config.material_name, config.size_label, config.shape_name, config.jewel_name].filter(Boolean).join(' · ');
 
         return `
             <div class="config-card">
@@ -166,65 +191,34 @@ function loadConfigToConfigurator(configId) {
 function addConfigToCart(configId) {
     (async () => {
         let config = null;
-
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                const data = await OreonAPI.getConfiguration(configId);
-                config = data.configuration;
-            } catch (err) {
-                config = null;
-            }
-        }
-
-        if (!config) {
-            const configs = LocalStore.getConfigurations();
-            config = configs.find(c => c.id === configId);
+        try {
+            const data = await OreonAPI.getConfiguration(configId);
+            config = data.configuration;
+        } catch (err) {
+            config = null;
         }
 
         if (!config) return;
 
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                await OreonAPI.addToCart(config.product_id, config.id, 1, null, config.total_price ?? null);
-                showToast('In den Warenkorb gelegt!', 'success');
-                updateCartBadge();
-                return;
-            } catch (err) {
-            }
+        try {
+            await OreonAPI.addToCart(config.product_id, config.id, 1, null, config.total_price ?? null);
+            showToast('In den Warenkorb gelegt!', 'success');
+            updateCartBadge();
+        } catch (err) {
+            showToast(err?.error || 'Konnte nicht in den Warenkorb legen.', 'error');
         }
-
-        LocalStore.addToCart({
-            product_id: config.product_id,
-            product_name: config.product_name,
-            category_slug: config.category_slug,
-            total_price: config.total_price,
-            base_price: config.base_price,
-            type_name: config.type_name,
-            material_name: config.material_name,
-            size_label: config.size_label,
-            shape_name: config.shape_name,
-            engraving_text: config.engraving_text
-        });
-
-        showToast('In den Warenkorb gelegt!', 'success');
     })();
 }
 
 function deleteConfig(configId) {
     (async () => {
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            try {
-                await OreonAPI.deleteConfiguration(configId);
-                showToast('Konfiguration gelöscht', 'info');
-                await loadConfigurations();
-                return;
-            } catch (err) {
-            }
+        try {
+            await OreonAPI.deleteConfiguration(configId);
+            showToast('Konfiguration gelöscht', 'info');
+            await loadConfigurations();
+        } catch (err) {
+            showToast(err?.error || 'Konfiguration löschen fehlgeschlagen.', 'error');
         }
-
-        LocalStore.deleteConfiguration(configId);
-        showToast('Konfiguration gelöscht', 'info');
-        loadConfigurations();
     })();
 }
 
@@ -233,15 +227,12 @@ async function loadOrders() {
     if (!list) return;
 
     let orders = [];
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getOrders();
-            orders = data.orders || [];
-        } catch (err) {
-            orders = LocalStore.getOrders();
-        }
-    } else {
-        orders = LocalStore.getOrders();
+    try {
+        const data = await OreonAPI.getOrders();
+        orders = data.orders || [];
+    } catch (err) {
+        showToast(err?.error || 'Bestellungen konnten nicht geladen werden.', 'error');
+        orders = [];
     }
 
     if (orders.length === 0) {
@@ -263,36 +254,137 @@ async function loadOrders() {
             delivered: 'Zugestellt', cancelled: 'Storniert'
         };
         const date = new Date(order.created_at).toLocaleDateString('de-AT');
+        const itemsCount = order.items_count ? `${order.items_count} Artikel` : '';
 
         return `
-            <div class="order-card">
+            <div class="order-card is-clickable" data-order-id="${order.id}">
                 <div class="order-header">
                     <span class="order-number">${escapeHtml(order.order_number)}</span>
                     <span class="order-status ${order.status}">${statusLabels[order.status] || order.status}</span>
                 </div>
                 <div class="order-details">
                     <span>${date}</span>
-                    <span>${order.items ? order.items.length + ' Artikel' : ''}</span>
+                    <span>${itemsCount}</span>
                     <span class="order-total">${formatPrice(order.total_price)}</span>
                 </div>
             </div>
         `;
     }).join('');
+
+    list.querySelectorAll('.order-card[data-order-id]').forEach(card => {
+        card.addEventListener('click', () => {
+            const orderId = parseInt(card.dataset.orderId || '0', 10);
+            if (!orderId) return;
+            openOrderDetailModal(orderId);
+        });
+    });
+}
+
+let orderDetailModal = null;
+let orderDetailContent = null;
+
+function initOrderDetailModal() {
+    orderDetailModal = document.getElementById('orderDetailModal');
+    orderDetailContent = document.getElementById('orderDetailContent');
+
+    const closeBtn = document.getElementById('closeOrderDetail');
+    const close = () => orderDetailModal?.classList.remove('active');
+
+    closeBtn?.addEventListener('click', close);
+    orderDetailModal?.addEventListener('click', (event) => {
+        if (event.target === orderDetailModal) close();
+    });
+}
+
+async function openOrderDetailModal(orderId) {
+    if (!orderDetailModal || !orderDetailContent) return;
+
+    orderDetailContent.innerHTML = '<div class="loader"><div class="loader-spinner"></div></div>';
+    orderDetailModal.classList.add('active');
+
+    let order = null;
+    let items = [];
+    try {
+        const data = await OreonAPI.getOrder(orderId);
+        order = data.order || null;
+        items = data.items || [];
+    } catch (err) {
+        showToast(err?.error || 'Bestelldetails konnten nicht geladen werden.', 'error');
+        orderDetailModal.classList.remove('active');
+        return;
+    }
+
+    if (!order) {
+        orderDetailContent.innerHTML = '<p>Bestellung nicht gefunden.</p>';
+        return;
+    }
+
+    const statusLabels = {
+        pending: 'Ausstehend', confirmed: 'Bestätigt',
+        processing: 'In Bearbeitung', shipped: 'Versandt',
+        delivered: 'Zugestellt', cancelled: 'Storniert'
+    };
+
+    const createdAt = new Date(order.created_at).toLocaleString('de-AT');
+    const shipping = [order.shipping_street, order.shipping_zip, order.shipping_city, order.shipping_country].filter(Boolean).join(', ');
+
+    //=====KI=====
+    const itemsHtml = items.map(item => {
+        const details = [item.type_name, item.material_name, item.size_label, item.shape_name, item.jewel_name]
+            .filter(Boolean)
+            .map(escapeHtml)
+            .join(' · ');
+        const unit = parseFloat(item.unit_price ?? 0);
+        const qty = parseInt(item.quantity ?? 1, 10) || 1;
+        const lineTotal = unit * qty;
+        return `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <strong>${escapeHtml(item.product_name || 'Produkt')}</strong>
+                    <div class="order-item-details">${details || 'Keine Details'}</div>
+                </div>
+                <div class="order-item-price">
+                    <span>${qty} × ${formatPrice(unit)}</span>
+                    <strong>${formatPrice(lineTotal)}</strong>
+                </div>
+            </div>
+        `;
+    }).join('');
+    //============
+
+    orderDetailContent.innerHTML = `
+        <div class="order-detail-header">
+            <div>
+                <h2>${escapeHtml(order.order_number)}</h2>
+                <div class="order-detail-meta">
+                    <span>${createdAt}</span>
+                    <span class="order-status ${order.status}">${statusLabels[order.status] || order.status}</span>
+                </div>
+            </div>
+            <div class="order-detail-total">
+                <span>Gesamt</span>
+                <strong>${formatPrice(order.total_price)}</strong>
+            </div>
+        </div>
+        <div class="order-detail-block">
+            <h3>Lieferadresse</h3>
+            <p>${escapeHtml(shipping || 'Keine Lieferadresse hinterlegt.')}</p>
+        </div>
+        <div class="order-detail-block">
+            <h3>Zahlung</h3>
+            <p>${escapeHtml(order.payment_method || 'Unbekannt')}</p>
+        </div>
+        <div class="order-detail-block">
+            <h3>Artikel</h3>
+            <div class="order-item-list">
+                ${itemsHtml || '<p>Keine Artikel gefunden.</p>'}
+            </div>
+        </div>
+    `;
 }
 
 async function loadProfile() {
-    let user = LocalStore.getUser();
-
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getMe();
-            if (data?.user) {
-                user = data.user;
-                LocalStore.setUser(user);
-            }
-        } catch (err) {
-        }
-    }
+    let user = await getCurrentUser();
 
     if (!user) return;
 
@@ -328,16 +420,52 @@ async function loadProfile() {
             };
 
             (async () => {
-                if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-                    try {
-                        await OreonAPI.updateProfile(updatedUser);
-                    } catch (err) {
-                    }
+                try {
+                    const data = await OreonAPI.updateProfile(updatedUser);
+                    setCurrentUser(data.user || updatedUser);
+                    showToast('Profil gespeichert!', 'success');
+                } catch (err) {
+                    showToast(err?.error || 'Profil speichern fehlgeschlagen.', 'error');
                 }
-
-                LocalStore.setUser(updatedUser);
-                showToast('Profil gespeichert!', 'success');
             })();
         });
     }
+}
+
+function initChangePasswordForm() {
+    const form = document.getElementById('changePasswordForm');
+    const errorEl = document.getElementById('changePasswordError');
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (errorEl) errorEl.textContent = '';
+
+        const currentPassword = document.getElementById('currentPassword')?.value || '';
+        const newPassword = document.getElementById('newPassword')?.value || '';
+        const newPasswordConfirm = document.getElementById('newPasswordConfirm')?.value || '';
+
+        if (!currentPassword || !newPassword || !newPasswordConfirm) {
+            if (errorEl) errorEl.textContent = 'Bitte alle Felder ausfüllen.';
+            return;
+        }
+        if (newPassword.length < 8) {
+            if (errorEl) errorEl.textContent = 'Neues Passwort muss mindestens 8 Zeichen haben.';
+            return;
+        }
+        if (newPassword !== newPasswordConfirm) {
+            if (errorEl) errorEl.textContent = 'Neue Passwörter stimmen nicht überein.';
+            return;
+        }
+
+        try {
+            await OreonAPI.changePassword(currentPassword, newPassword);
+            showToast('Passwort geändert!', 'success');
+            form.reset();
+        } catch (err) {
+            const msg = err?.error || 'Passwort ändern fehlgeschlagen.';
+            if (errorEl) errorEl.textContent = msg;
+            else showToast(msg, 'error');
+        }
+    });
 }

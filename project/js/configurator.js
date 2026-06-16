@@ -2,15 +2,16 @@ const ConfigState = {
     product: null,
     categoryId: null,
     categorySlug: 'ringe',
-    options: { types: [], materials: [], sizes: [], shapes: [], engravings: [] },
+    options: { types: [], materials: [], sizes: [], shapes: [], jewels: [] },
+    defaultSelections: { type: null, material: null, size: null, shape: null, jewel: null },
     selected: {
         type: null,
         material: null,
         size: null,
         shape: null,
-        engraving: null,
-        engravingText: ''
+        jewel: null
     },
+    pricingMode: 'preset',
     basePrice: 0,
     babylonScene: null,
     babylonEngine: null,
@@ -22,65 +23,73 @@ const ConfigState = {
 const PLACEHOLDER_OPTIONS = {
     ringe: {
         types: [
-            { id: 1, name: 'Solitär', slug: 'solitaer', price_modifier: 50 },
-            { id: 2, name: 'Ehering', slug: 'ehering', price_modifier: 0 },
-            { id: 3, name: 'Verlobungsring', slug: 'verlobungsring', price_modifier: 75 },
-            { id: 4, name: 'Statement-Ring', slug: 'statement', price_modifier: 40 },
-            { id: 5, name: 'Siegelring', slug: 'siegelring', price_modifier: 35 }
+            { id: 1, name: 'Solitär', slug: 'solitaer', price_modifier: 420 },
+            { id: 2, name: 'Ehering', slug: 'ehering', price_modifier: 520 },
+            { id: 3, name: 'Verlobungsring', slug: 'verlobungsring', price_modifier: 500 },
+            { id: 4, name: 'Statement-Ring', slug: 'statement', price_modifier: 370 },
+            { id: 5, name: 'Siegelring', slug: 'siegelring', price_modifier: 360 }
         ],
         sizes: [
             { id: 1, label: '48 (15.3mm)', value: '48', price_modifier: 0 },
-            { id: 2, label: '50 (15.9mm)', value: '50', price_modifier: 0 },
-            { id: 3, label: '52 (16.6mm)', value: '52', price_modifier: 0 },
-            { id: 4, label: '54 (17.2mm)', value: '54', price_modifier: 0 },
-            { id: 5, label: '56 (17.8mm)', value: '56', price_modifier: 0 },
-            { id: 6, label: '58 (18.5mm)', value: '58', price_modifier: 0 },
-            { id: 7, label: '60 (19.1mm)', value: '60', price_modifier: 0 },
-            { id: 8, label: '62 (19.7mm)', value: '62', price_modifier: 5 },
-            { id: 9, label: '64 (20.4mm)', value: '64', price_modifier: 5 },
-            { id: 10, label: '66 (21.0mm)', value: '66', price_modifier: 10 }
+            { id: 2, label: '50 (15.9mm)', value: '50', price_modifier: 30 },
+            { id: 3, label: '52 (16.6mm)', value: '52', price_modifier: 40 },
+            { id: 4, label: '54 (17.2mm)', value: '54', price_modifier: 50 },
+            { id: 5, label: '56 (17.8mm)', value: '56', price_modifier: 60 },
+            { id: 6, label: '58 (18.5mm)', value: '58', price_modifier: 70 },
+            { id: 7, label: '60 (19.1mm)', value: '60', price_modifier: 80 },
+            { id: 8, label: '62 (19.7mm)', value: '62', price_modifier: 110 },
+            { id: 9, label: '64 (20.4mm)', value: '64', price_modifier: 130 },
+            { id: 10, label: '66 (21.0mm)', value: '66', price_modifier: 160 }
         ],
         shapes: [
-            { id: 1, name: 'Klassisch rund', slug: 'klassisch', price_modifier: 0 },
-            { id: 2, name: 'Flach', slug: 'flach', price_modifier: 0 },
-            { id: 3, name: 'Gewölbt', slug: 'gewoelbt', price_modifier: 10 },
-            { id: 4, name: 'Twisted', slug: 'twisted', price_modifier: 25 },
-            { id: 5, name: 'Hexagonal', slug: 'hexagonal', price_modifier: 30 }
+            { id: 1, name: 'Klassisch rund', slug: 'klassisch', price_modifier: 60 },
+            { id: 2, name: 'Flach', slug: 'flach', price_modifier: 50 },
+            { id: 3, name: 'Gewölbt', slug: 'gewoelbt', price_modifier: 110 },
+            { id: 4, name: 'Twisted', slug: 'twisted', price_modifier: 200 },
+            { id: 5, name: 'Hexagonal', slug: 'hexagonal', price_modifier: 240 }
         ]
     },
     armbaender: {
         types: [
-            { id: 6, name: 'Armreif', slug: 'armreif', price_modifier: 20 },
-            { id: 7, name: 'Gliederarmband', slug: 'glieder', price_modifier: 30 },
-            { id: 8, name: 'Tennisarmband', slug: 'tennis', price_modifier: 60 },
-            { id: 9, name: 'Panzerarmband', slug: 'panzer', price_modifier: 25 },
-            { id: 10, name: 'Charm-Armband', slug: 'charm', price_modifier: 15 }
+            { id: 6, name: 'Armreif', slug: 'armreif', price_modifier: 240 },
+            { id: 7, name: 'Gliederarmband', slug: 'glieder', price_modifier: 290 },
+            { id: 8, name: 'Tennisarmband', slug: 'tennis', price_modifier: 460 },
+            { id: 9, name: 'Panzerarmband', slug: 'panzer', price_modifier: 270 },
+            { id: 10, name: 'Charm-Armband', slug: 'charm', price_modifier: 230 }
         ],
         sizes: [
             { id: 11, label: 'S (16cm)', value: 'S', price_modifier: 0 },
-            { id: 12, label: 'M (18cm)', value: 'M', price_modifier: 0 },
-            { id: 13, label: 'L (20cm)', value: 'L', price_modifier: 5 },
-            { id: 14, label: 'XL (22cm)', value: 'XL', price_modifier: 10 }
+            { id: 12, label: 'M (18cm)', value: 'M', price_modifier: 40 },
+            { id: 13, label: 'L (20cm)', value: 'L', price_modifier: 65 },
+            { id: 14, label: 'XL (22cm)', value: 'XL', price_modifier: 100 }
         ],
         shapes: [
-            { id: 6, name: 'Rund', slug: 'rund', price_modifier: 0 },
-            { id: 7, name: 'Flach', slug: 'flach', price_modifier: 0 },
-            { id: 8, name: 'Oval', slug: 'oval', price_modifier: 10 },
-            { id: 9, name: 'Eckig', slug: 'eckig', price_modifier: 15 }
+            { id: 6, name: 'Rund', slug: 'rund', price_modifier: 55 },
+            { id: 7, name: 'Flach', slug: 'flach', price_modifier: 45 },
+            { id: 8, name: 'Oval', slug: 'oval', price_modifier: 100 },
+            { id: 9, name: 'Eckig', slug: 'eckig', price_modifier: 140 }
         ]
     },
     materials: [
         { id: 1, name: '925er Silber', slug: 'silber', price_modifier: 0, color_hex: '#C0C0C0' },
-        { id: 2, name: '750er Gelbgold', slug: 'gelbgold', price_modifier: 120, color_hex: '#FFD700' },
-        { id: 3, name: '750er Roségold', slug: 'rosegold', price_modifier: 130, color_hex: '#B76E79' },
-        { id: 4, name: '750er Weißgold', slug: 'weissgold', price_modifier: 125, color_hex: '#E8E8E8' },
-        { id: 5, name: 'Platin 950', slug: 'platin', price_modifier: 250, color_hex: '#E5E4E2' },
-        { id: 6, name: 'Titan', slug: 'titan', price_modifier: 30, color_hex: '#878681' }
+        { id: 2, name: '750er Gelbgold', slug: 'gelbgold', price_modifier: 620, color_hex: '#FFD700' },
+        { id: 3, name: '750er Roségold', slug: 'rosegold', price_modifier: 650, color_hex: '#B76E79' },
+        { id: 4, name: '750er Weißgold', slug: 'weissgold', price_modifier: 640, color_hex: '#E8E8E8' },
+        { id: 5, name: 'Platin 950', slug: 'platin', price_modifier: 980, color_hex: '#E5E4E2' },
+        { id: 6, name: 'Titan', slug: 'titan', price_modifier: 340, color_hex: '#878681' }
     ],
-    engravings: [
-        { id: 1, name: 'Einfache Gravur', max_chars: 20, price_per_char: 2.50, base_price: 15 },
-        { id: 2, name: 'Schreibschrift', max_chars: 15, price_per_char: 3.50, base_price: 20 },
-        { id: 3, name: 'Symbolgravur', max_chars: 5, price_per_char: 5.00, base_price: 25 }
+    jewels: [
+        { id: 1, name: 'Diamant', slug: 'diamant', price_modifier: 690, color_hex: '#f5f9ff', is_special: 0 },
+        { id: 2, name: 'Saphir', slug: 'saphir', price_modifier: 420, color_hex: '#2850d8', is_special: 0 },
+        { id: 3, name: 'Rubin', slug: 'rubin', price_modifier: 460, color_hex: '#c32036', is_special: 0 },
+        { id: 4, name: 'Smaragd', slug: 'smaragd', price_modifier: 480, color_hex: '#11a66a', is_special: 0 },
+        { id: 5, name: 'Aquamarin', slug: 'aquamarin', price_modifier: 340, color_hex: '#7ad8e8', is_special: 0 },
+        { id: 6, name: 'Perle', slug: 'perle', price_modifier: 300, color_hex: '#f3eee6', is_special: 0 },
+        { id: 7, name: 'Jade', slug: 'jade', price_modifier: 620, color_hex: '#2f8f62', is_special: 1 },
+        { id: 8, name: 'Tansanit', slug: 'tansanit', price_modifier: 760, color_hex: '#5a57d9', is_special: 1 },
+        { id: 9, name: 'Alexandrit', slug: 'alexandrit', price_modifier: 920, color_hex: '#4f7d68', is_special: 1 },
+        { id: 10, name: 'Opal', slug: 'opal', price_modifier: 680, color_hex: '#b7d8ff', is_special: 1 },
+        { id: 11, name: 'Paraiba-Turmalin', slug: 'paraiba-turmalin', price_modifier: 1250, color_hex: '#33dcd0', is_special: 1 }
     ]
 };
 
@@ -214,34 +223,24 @@ function loadConfigProducts(category) {
     ConfigState.categorySlug = category;
     const productsForCategory = PLACEHOLDER_PRODUCTS.filter(product => product.category_slug === category);
 
-    const categoryIcon = category === 'ringe' ? 'fa-ring' : 'fa-circle-notch';
     grid.innerHTML = productsForCategory
-        .map(product => {
-            return `
-                <div class="product-card" data-product-slug="${escapeHtml(product.slug)}">
-                    <div class="product-card-img">
-                        <span class="placeholder-icon"><i class="fas ${categoryIcon}"></i></span>
-                    </div>
-                    <div class="product-card-body">
-                        <div class="product-card-category">${escapeHtml(product.category_name)}</div>
-                        <h3 class="product-card-title">${escapeHtml(product.name)}</h3>
-                        <p class="product-card-desc">${escapeHtml(product.description)}</p>
-                        <div class="product-card-footer">
-                            <span class="product-price"><small>ab</small><span class="product-price-value">${formatPrice(product.base_price)}</span></span>
-                            <span class="btn btn-secondary btn-sm">Auswählen</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        })
+        .map(product => createProductCard(product))
         .join('');
 
-    grid.querySelectorAll('.product-card').forEach(productCard => {
-        productCard.addEventListener('click', () => {
-            const selectedProductSlug = productCard.dataset.productSlug;
+    grid.querySelectorAll('.product-card[data-slug]').forEach(productCard => {
+        const handleSelect = () => {
+            const selectedProductSlug = productCard.dataset.slug;
             const selectedProduct = PLACEHOLDER_PRODUCTS.find(product => product.slug === selectedProductSlug);
             if (selectedProduct) {
                 selectProduct(selectedProduct);
+            }
+        };
+
+        productCard.addEventListener('click', handleSelect);
+        productCard.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                handleSelect();
             }
         });
     });
@@ -264,8 +263,10 @@ function selectProduct(product) {
     ConfigState.categorySlug = product.category_slug;
     ConfigState.categoryId = product.category_id;
     ConfigState.currentStep = 0;
+    ConfigState.pricingMode = 'preset';
 
-    ConfigState.selected = { type: null, material: null, size: null, shape: null, engraving: null, engravingText: '' };
+    ConfigState.selected = { type: null, material: null, size: null, shape: null, jewel: null };
+    ConfigState.defaultSelections = { type: null, material: null, size: null, shape: null, jewel: null };
 
     document.getElementById('productSelection')?.classList.add('hidden');
     const pageHeader = document.querySelector('.page-header');
@@ -302,8 +303,18 @@ function loadOptions() {
         materials: PLACEHOLDER_OPTIONS.materials,
         sizes: catOpts.sizes,
         shapes: catOpts.shapes,
-        engravings: PLACEHOLDER_OPTIONS.engravings
+        jewels: PLACEHOLDER_OPTIONS.jewels
     };
+
+    ConfigState.defaultSelections = {
+        type: ConfigState.options.types[0] || null,
+        material: ConfigState.options.materials[0] || null,
+        size: ConfigState.options.sizes[0] || null,
+        shape: ConfigState.options.shapes[0] || null,
+        jewel: ConfigState.options.jewels[0] || null
+    };
+
+    ConfigState.selected = { ...ConfigState.defaultSelections };
 
     renderOptions();
 }
@@ -312,34 +323,30 @@ function renderOptions() {
     const opts = ConfigState.options;
 
     renderOptionGroup('configTypes', opts.types, 'type', (t) =>
-        `${t.name}<span class="price-mod">${t.price_modifier > 0 ? '+' + formatPrice(t.price_modifier) : 'inkl.'}</span>`
+        `${t.name}<span class="price-mod">${t.price_modifier > 0 ? '+' + formatPrice(t.price_modifier) : 'inkl.'}</span>`,
+        ConfigState.selected.type?.id
     );
 
     renderOptionGroup('configMaterials', opts.materials, 'material', (m) =>
-        `<div class="material-swatch"><span class="swatch-circle" data-color="${escapeHtml(m.color_hex)}"></span>${m.name}</div><span class="price-mod">${m.price_modifier > 0 ? '+' + formatPrice(m.price_modifier) : 'inkl.'}</span>`
+        `<div class="material-swatch"><span class="swatch-circle" data-color="${escapeHtml(m.color_hex)}"></span>${m.name}</div><span class="price-mod">${m.price_modifier > 0 ? '+' + formatPrice(m.price_modifier) : 'inkl.'}</span>`,
+        ConfigState.selected.material?.id
     );
     applyMaterialSwatches();
 
     renderOptionGroup('configSizes', opts.sizes, 'size', (s) =>
-        `${s.label}<span class="price-mod">${s.price_modifier > 0 ? '+' + formatPrice(s.price_modifier) : 'inkl.'}</span>`
+        `${s.label}<span class="price-mod">${s.price_modifier > 0 ? '+' + formatPrice(s.price_modifier) : 'inkl.'}</span>`,
+        ConfigState.selected.size?.id
     );
 
     renderOptionGroup('configShapes', opts.shapes, 'shape', (sh) =>
-        `${sh.name}<span class="price-mod">${sh.price_modifier > 0 ? '+' + formatPrice(sh.price_modifier) : 'inkl.'}</span>`
+        `${sh.name}<span class="price-mod">${sh.price_modifier > 0 ? '+' + formatPrice(sh.price_modifier) : 'inkl.'}</span>`,
+        ConfigState.selected.shape?.id
     );
 
-    renderOptionGroup('configEngravings', opts.engravings, 'engraving', (engraving) =>
-        `${engraving.name}<span class="price-mod">ab ${formatPrice(engraving.base_price)}</span>`
+    renderOptionGroup('configJewels', opts.jewels, 'jewel', (jewel) =>
+        `${jewel.name}<span class="price-mod">+${formatPrice(jewel.price_modifier)}</span>`,
+        ConfigState.selected.jewel?.id
     );
-
-    const engInput = document.getElementById('engravingText');
-    if (engInput) {
-        engInput.addEventListener('input', () => {
-            ConfigState.selected.engravingText = engInput.value;
-            updateCharCount();
-            updatePrice();
-        });
-    }
 }
 
 function applyMaterialSwatches() {
@@ -348,12 +355,12 @@ function applyMaterialSwatches() {
     });
 }
 
-function renderOptionGroup(containerId, options, stateKey, renderFn) {
+function renderOptionGroup(containerId, options, stateKey, renderFn, selectedId = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     container.innerHTML = options.map(opt => `
-        <div class="config-option" data-id="${opt.id}" data-key="${stateKey}">
+        <div class="config-option${selectedId !== null && Number(selectedId) === Number(opt.id) ? ' selected' : ''}" data-id="${opt.id}" data-key="${stateKey}">
             ${renderFn(opt)}
         </div>
     `).join('');
@@ -366,16 +373,7 @@ function renderOptionGroup(containerId, options, stateKey, renderFn) {
             const id = parseInt(el.dataset.id);
             ConfigState.selected[stateKey] = options.find(o => o.id === id);
 
-            if (stateKey === 'engraving') {
-                const engInput = document.getElementById('engravingText');
-                if (engInput) {
-                    engInput.disabled = false;
-                    engInput.maxLength = ConfigState.selected.engraving.max_chars;
-                    engInput.focus();
-                    updateCharCount();
-                }
-            }
-
+            syncPricingMode();
             updatePrice();
             update3DModel();
 
@@ -388,28 +386,26 @@ function renderOptionGroup(containerId, options, stateKey, renderFn) {
     });
 }
 
-function updateCharCount() {
-    const engInput = document.getElementById('engravingText');
-    const countEl = document.getElementById('engravingCharCount');
-    const eng = ConfigState.selected.engraving;
-    if (engInput && countEl && eng) {
-        countEl.textContent = `${engInput.value.length}/${eng.max_chars} Zeichen`;
-    }
-}
-
 function updatePrice() {
+    syncPricingMode();
+
     const selectedOptions = ConfigState.selected;
-    let total = ConfigState.basePrice;
+    let subtotal = ConfigState.basePrice;
 
-    if (selectedOptions.type) total += parseFloat(selectedOptions.type.price_modifier || 0);
-    if (selectedOptions.material) total += parseFloat(selectedOptions.material.price_modifier || 0);
-    if (selectedOptions.size) total += parseFloat(selectedOptions.size.price_modifier || 0);
-    if (selectedOptions.shape) total += parseFloat(selectedOptions.shape.price_modifier || 0);
+    if (selectedOptions.type) subtotal += parseFloat(selectedOptions.type.price_modifier || 0);
+    if (selectedOptions.material) subtotal += parseFloat(selectedOptions.material.price_modifier || 0);
+    if (selectedOptions.size) subtotal += parseFloat(selectedOptions.size.price_modifier || 0);
+    if (selectedOptions.shape) subtotal += parseFloat(selectedOptions.shape.price_modifier || 0);
+    if (selectedOptions.jewel) subtotal += parseFloat(selectedOptions.jewel.price_modifier || 0);
 
-    if (selectedOptions.engraving && selectedOptions.engravingText) {
-        total += parseFloat(selectedOptions.engraving.base_price || 0);
-        total += selectedOptions.engravingText.length * parseFloat(selectedOptions.engraving.price_per_char || 0);
+    let total = subtotal;
+    if (ConfigState.pricingMode === 'preset') {
+        total = subtotal * 0.8;
+    } else {
+        total = subtotal + 200;
     }
+
+    total = Math.round(total * 100) / 100;
 
     const formatted = formatPrice(total);
 
@@ -433,14 +429,29 @@ function updatePrice() {
         if (selectedOptions.material?.price_modifier > 0) parts.push(`Material: +${formatPrice(selectedOptions.material.price_modifier)}`);
         if (selectedOptions.size?.price_modifier > 0) parts.push(`Größe: +${formatPrice(selectedOptions.size.price_modifier)}`);
         if (selectedOptions.shape?.price_modifier > 0) parts.push(`Form: +${formatPrice(selectedOptions.shape.price_modifier)}`);
-        if (selectedOptions.engraving && selectedOptions.engravingText) {
-            const engPrice = parseFloat(selectedOptions.engraving.base_price) + selectedOptions.engravingText.length * parseFloat(selectedOptions.engraving.price_per_char);
-            parts.push(`Gravur: +${formatPrice(engPrice)}`);
+        if (selectedOptions.jewel?.price_modifier > 0) parts.push(`Juwel: +${formatPrice(selectedOptions.jewel.price_modifier)}`);
+        if (ConfigState.pricingMode === 'preset') {
+            parts.push('Preset: -20%');
+        } else {
+            parts.push('Eigene Konfiguration: +200,00 €');
         }
         breakdownEl.textContent = parts.join(' | ');
     }
 
     return total;
+}
+
+function syncPricingMode() {
+    const selected = ConfigState.selected;
+    const defaults = ConfigState.defaultSelections;
+
+    const isPreset = ['type', 'material', 'size', 'shape', 'jewel'].every(key => {
+        const selectedId = selected[key]?.id ?? null;
+        const defaultId = defaults[key]?.id ?? null;
+        return selectedId === defaultId;
+    });
+
+    ConfigState.pricingMode = isPreset ? 'preset' : 'custom';
 }
 
 function buildSummary() {
@@ -453,12 +464,7 @@ function buildSummary() {
         { label: 'Material', value: selectedOptions.material?.name || '—' },
         { label: 'Größe', value: selectedOptions.size?.label || '—' },
         { label: 'Form', value: selectedOptions.shape?.name || '—' },
-        {
-            label: 'Gravur',
-            value: selectedOptions.engraving
-                ? `${selectedOptions.engraving.name}${selectedOptions.engravingText ? ': "' + escapeHtml(selectedOptions.engravingText) + '"' : ''}`
-                : 'Keine'
-        }
+        { label: 'Juwel', value: selectedOptions.jewel?.name || 'Keines' }
     ];
 
     el.innerHTML = rows.map(r => `
@@ -512,37 +518,42 @@ function initConfiguratorButtons() {
             material_name: selectedOptions.material?.name,
             size_label: selectedOptions.size?.label,
             shape_name: selectedOptions.shape?.name,
-            engraving_text: selectedOptions.engravingText
+            jewel_name: selectedOptions.jewel?.name,
+            jewel_slug: selectedOptions.jewel?.slug
         };
 
-        if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-            (async () => {
-                try {
-                    await OreonAPI.addToCart(
-                        cartItem.product_id,
-                        null,
-                        1,
-                        {
-                            category_slug: cartItem.category_slug,
-                            type_name: cartItem.type_name,
-                            material_name: cartItem.material_name,
-                            size_label: cartItem.size_label,
-                            shape_name: cartItem.shape_name,
-                            engraving_text: cartItem.engraving_text
-                        },
-                        cartItem.total_price
-                    );
-                    showToast('In den Warenkorb gelegt!', 'success');
-                    updateCartBadge();
-                } catch (err) {
-                    LocalStore.addToCart(cartItem);
-                    showToast('In den Warenkorb gelegt!', 'success');
-                }
-            })();
-        } else {
-            LocalStore.addToCart(cartItem);
-            showToast('In den Warenkorb gelegt!', 'success');
-        }
+        (async () => {
+            const user = await getCurrentUser();
+            if (!user) {
+                showToast('Bitte melde dich an, um den Warenkorb zu nutzen.', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1200);
+                return;
+            }
+
+            try {
+                bumpCartBadge(1);
+                await OreonAPI.addToCart(
+                    cartItem.product_id,
+                    null,
+                    1,
+                    {
+                        category_slug: cartItem.category_slug,
+                        type_name: cartItem.type_name,
+                        material_name: cartItem.material_name,
+                        size_label: cartItem.size_label,
+                        shape_name: cartItem.shape_name,
+                        jewel_name: cartItem.jewel_name,
+                        jewel_slug: cartItem.jewel_slug
+                    },
+                    cartItem.total_price
+                );
+                showToast('In den Warenkorb gelegt!', 'success');
+                updateCartBadge();
+            } catch (err) {
+                updateCartBadge();
+                showToast(err?.error || 'Konnte nicht in den Warenkorb legen.', 'error');
+            }
+        })();
 
         // =====KI=====
         const btn = document.getElementById('btnAddToCart');
@@ -556,12 +567,6 @@ function initConfiguratorButtons() {
     });
 
     document.getElementById('btnSaveConfig')?.addEventListener('click', () => {
-        if (!LocalStore.isLoggedIn()) {
-            showToast('Bitte melde dich an, um Konfigurationen zu speichern.', 'error');
-            setTimeout(() => window.location.href = 'login.html', 1500);
-            return;
-        }
-
         if (!ConfigState.product) return;
 
         const selectedOptions = ConfigState.selected;
@@ -583,25 +588,25 @@ function initConfiguratorButtons() {
             size_label: selectedOptions.size?.label,
             shape_id: selectedOptions.shape?.id,
             shape_name: selectedOptions.shape?.name,
-            engraving_id: selectedOptions.engraving?.id,
-            engraving_name: selectedOptions.engraving?.name,
-            engraving_text: selectedOptions.engravingText
+            jewel_id: selectedOptions.jewel?.id,
+            jewel_name: selectedOptions.jewel?.name
         };
 
-        if (typeof OreonAPI !== 'undefined') {
-            (async () => {
-                try {
-                    await OreonAPI.saveConfiguration(payload);
-                    showToast('Konfiguration gespeichert!', 'success');
-                } catch (err) {
-                    LocalStore.saveConfiguration(payload);
-                    showToast('Konfiguration gespeichert!', 'success');
-                }
-            })();
-        } else {
-            LocalStore.saveConfiguration(payload);
-            showToast('Konfiguration gespeichert!', 'success');
-        }
+        (async () => {
+            const user = await getCurrentUser();
+            if (!user) {
+                showToast('Bitte melde dich an, um Konfigurationen zu speichern.', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+
+            try {
+                await OreonAPI.saveConfiguration(payload);
+                showToast('Konfiguration gespeichert!', 'success');
+            } catch (err) {
+                showToast(err?.error || 'Konfiguration speichern fehlgeschlagen.', 'error');
+            }
+        })();
 
         // =====KI=====
         const btn = document.getElementById('btnSaveConfig');
@@ -616,20 +621,19 @@ function initConfiguratorButtons() {
 }
 
 async function loadSavedConfiguration(configId) {
-    let config = null;
-
-    if (LocalStore.isLoggedIn() && typeof OreonAPI !== 'undefined') {
-        try {
-            const data = await OreonAPI.getConfiguration(configId);
-            config = data.configuration;
-        } catch (err) {
-            config = null;
-        }
+    const user = await getCurrentUser();
+    if (!user) {
+        showToast('Bitte melde dich an, um Konfigurationen zu laden.', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1200);
+        return;
     }
 
-    if (!config) {
-        const configs = LocalStore.getConfigurations();
-        config = configs.find(c => c.id === configId);
+    let config = null;
+    try {
+        const data = await OreonAPI.getConfiguration(configId);
+        config = data.configuration;
+    } catch (err) {
+        config = null;
     }
 
     if (!config) return;
@@ -644,16 +648,7 @@ async function loadSavedConfiguration(configId) {
         if (config.material_id) selectOptionById('material', config.material_id);
         if (config.size_id) selectOptionById('size', config.size_id);
         if (config.shape_id) selectOptionById('shape', config.shape_id);
-        if (config.engraving_id) {
-            selectOptionById('engraving', config.engraving_id);
-            const engInput = document.getElementById('engravingText');
-            if (engInput && config.engraving_text) {
-                engInput.value = config.engraving_text;
-                engInput.disabled = false;
-                ConfigState.selected.engravingText = config.engraving_text;
-                updateCharCount();
-            }
-        }
+        if (config.jewel_id) selectOptionById('jewel', config.jewel_id);
         if (config.name) {
             const nameInput = document.getElementById('configName');
             if (nameInput) nameInput.value = config.name;
@@ -668,7 +663,7 @@ function selectOptionById(stateKey, id) {
         material: 'configMaterials',
         size: 'configSizes',
         shape: 'configShapes',
-        engraving: 'configEngravings'
+        jewel: 'configJewels'
     };
     const container = document.getElementById(containerMap[stateKey]);
     if (!container) return;
@@ -695,31 +690,30 @@ function initBabylonScene() {
     scene.clearColor = new BABYLON.Color4(0.04, 0.08, 0.05, 1); // dark green-ish
 
     // Camera
-    const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, 6, BABYLON.Vector3.Zero(), scene);
+    const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.35, 5.4, new BABYLON.Vector3(0, 0.15, 0), scene);
     camera.attachControl(canvas, true);
-    camera.lowerRadiusLimit = 3;
-    camera.upperRadiusLimit = 12;
+    camera.lowerRadiusLimit = 3.2;
+    camera.upperRadiusLimit = 9;
     camera.wheelDeltaPercentage = 0.01;
-    camera.panningSensibility = 0; // disable panning
-
-    // Auto rotate
-    scene.registerBeforeRender(() => {
-        if (!scene.activeCamera) return;
-        camera.alpha += 0.003;
-    });
+    camera.panningSensibility = 0;
+    camera.useAutoRotationBehavior = false;
 
     // Lighting
     const hemiLight = new BABYLON.HemisphericLight('hemiLight', new BABYLON.Vector3(0, 1, 0), scene);
-    hemiLight.intensity = 0.6;
-    hemiLight.diffuse = new BABYLON.Color3(1, 0.95, 0.85);
+    hemiLight.intensity = 0.55;
+    hemiLight.diffuse = new BABYLON.Color3(1, 0.97, 0.9);
 
-    const dirLight = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(-1, -2, -1), scene);
-    dirLight.intensity = 0.8;
-    dirLight.position = new BABYLON.Vector3(5, 10, 5);
+    const dirLight = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(-0.6, -1, -0.35), scene);
+    dirLight.intensity = 1.05;
+    dirLight.position = new BABYLON.Vector3(4, 8, 3);
 
-    const pointLight = new BABYLON.PointLight('pointLight', new BABYLON.Vector3(2, 3, 2), scene);
-    pointLight.intensity = 0.4;
-    pointLight.diffuse = new BABYLON.Color3(1, 0.9, 0.7);
+    const pointLight = new BABYLON.PointLight('pointLight', new BABYLON.Vector3(2.8, 2.6, -1.2), scene);
+    pointLight.intensity = 0.65;
+    pointLight.diffuse = new BABYLON.Color3(1, 0.92, 0.8);
+
+    const rimLight = new BABYLON.PointLight('rimLight', new BABYLON.Vector3(-2.8, 1.8, 2.8), scene);
+    rimLight.intensity = 0.35;
+    rimLight.diffuse = new BABYLON.Color3(0.8, 0.95, 1);
 
     // Environment
     const envTexture = BABYLON.CubeTexture.CreateFromPrefilteredData('https://assets.babylonjs.com/environments/environmentSpecular.env', scene);
@@ -760,61 +754,229 @@ function createRingMesh(scene) {
     const shapeSlug = ConfigState.selected.shape?.slug || 'klassisch';
 
     let ring;
+    const ringDiameter = 3;
+    let ringThickness = 0.45;
     switch (shapeSlug) {
         case 'flach':
             ring = BABYLON.MeshBuilder.CreateTorus('ring', {
-                diameter: 3, thickness: 0.4, tessellation: 64
+                diameter: ringDiameter, thickness: 0.42, tessellation: 96
             }, scene);
-            // Flatten
+            ringThickness = 0.42;
             ring.scaling.y = 0.5;
             break;
         case 'gewoelbt':
             ring = BABYLON.MeshBuilder.CreateTorus('ring', {
-                diameter: 3, thickness: 0.5, tessellation: 64
+                diameter: ringDiameter, thickness: 0.52, tessellation: 96
             }, scene);
+            ringThickness = 0.52;
             break;
         case 'twisted':
-            // Create twisted ring using path/ribbon
             ring = createTwistedRing(scene);
+            ringThickness = 0.4;
             break;
         case 'hexagonal':
             ring = BABYLON.MeshBuilder.CreateTorus('ring', {
-                diameter: 3, thickness: 0.4, tessellation: 6
+                diameter: ringDiameter, thickness: 0.4, tessellation: 12
             }, scene);
+            ringThickness = 0.4;
             break;
         default: // klassisch
             ring = BABYLON.MeshBuilder.CreateTorus('ring', {
-                diameter: 3, thickness: 0.45, tessellation: 64
+                diameter: ringDiameter, thickness: ringThickness, tessellation: 96
             }, scene);
     }
+
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.05;
 
     // Apply material
     const mat = createMetalMaterial(scene);
     ring.material = mat;
     ConfigState.meshes.main = ring;
 
-    // Add gem for Solitär/Verlobungsring
-    const typeSlug = ConfigState.selected.type?.slug;
-    if (typeSlug === 'solitaer' || typeSlug === 'verlobungsring') {
-        const gem = BABYLON.MeshBuilder.CreateIcoSphere('gem', { radius: 0.25, subdivisions: 3 }, scene);
-        gem.position.y = 1.6;
-        const gemMat = new BABYLON.PBRMaterial('gemMat', scene);
-        gemMat.albedoColor = new BABYLON.Color3(0.9, 0.9, 1);
-        gemMat.metallic = 0.1;
-        gemMat.roughness = 0.05;
-        gemMat.indexOfRefraction = 2.42; // Diamond
-        gemMat.alpha = 0.85;
-        gemMat.subSurface.isRefractionEnabled = true;
-        gem.material = gemMat;
-        ConfigState.meshes.gem = gem;
+    const selectedJewel = ConfigState.selected.jewel;
+    if (selectedJewel) {
+        const jewelPack = createJewelAssembly(scene, selectedJewel, ringDiameter, ringThickness, mat);
+        ConfigState.meshes.jewelAssembly = jewelPack.root;
+        ConfigState.meshes.gemSeat = jewelPack.seat;
+        ConfigState.meshes.gem = jewelPack.gem;
+        jewelPack.prongs.forEach((prong, index) => {
+            ConfigState.meshes[`prong_${index}`] = prong;
+        });
+    }
+}
+
+function createJewelAssembly(scene, selectedJewel, ringDiameter, ringThickness, metalMaterial) {
+    const seatHeight = ringDiameter * 0.5 + 0.28;
+    const root = new BABYLON.TransformNode('jewelAssembly', scene);
+
+    const seat = BABYLON.MeshBuilder.CreateCylinder('gemSeat', {
+        diameterTop: ringThickness * 1.08,
+        diameterBottom: ringThickness * 1.28,
+        height: 0.22,
+        tessellation: 64
+    }, scene);
+    seat.position.y = seatHeight;
+    seat.material = metalMaterial;
+    seat.parent = root;
+
+    const gem = createJewelMesh(scene, selectedJewel, seatHeight + 0.15);
+    gem.parent = root;
+
+    const gemMat = createGemMaterial(scene, 'gemMat', selectedJewel.color_hex);
+    gem.material = gemMat;
+
+    const prongs = [];
+    for (let i = 0; i < 4; i++) {
+        const prongAngle = (i / 4) * Math.PI * 2;
+        const prong = BABYLON.MeshBuilder.CreateCylinder(`prong_${i}`, {
+            diameter: 0.045,
+            height: 0.34,
+            tessellation: 18
+        }, scene);
+        prong.position.x = Math.cos(prongAngle) * 0.18;
+        prong.position.z = Math.sin(prongAngle) * 0.18;
+        prong.position.y = seatHeight + 0.14;
+        prong.rotation.z = Math.PI / 2;
+        prong.material = metalMaterial;
+        prong.parent = root;
+        prongs.push(prong);
     }
 
-    // Platform
-    createPlatform(scene);
+    return { root, seat, gem, prongs };
+}
+
+function createJewelMesh(scene, selectedJewel, yPosition) {
+    const jewelSlug = selectedJewel?.slug || 'diamant';
+    let gem;
+
+    switch (jewelSlug) {
+        case 'diamant':
+            gem = BABYLON.MeshBuilder.CreatePolyhedron('gem', {
+                type: 1,
+                size: 0.24,
+                updatable: false
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1, 1.18, 1);
+            gem.rotation.y = Math.PI / 5;
+            break;
+        case 'saphir':
+            gem = BABYLON.MeshBuilder.CreateIcoSphere('gem', {
+                radius: 0.26,
+                subdivisions: 4
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.15, 0.92, 1.05);
+            gem.rotation.x = Math.PI / 9;
+            gem.rotation.y = Math.PI / 7;
+            break;
+        case 'rubin':
+            gem = BABYLON.MeshBuilder.CreatePolyhedron('gem', {
+                type: 2,
+                size: 0.255,
+                updatable: false
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.15, 0.95, 1.1);
+            gem.rotation.y = Math.PI / 4;
+            break;
+        case 'smaragd':
+            gem = BABYLON.MeshBuilder.CreateBox('gem', {
+                size: 0.42,
+                faceColors: new Array(6).fill(null)
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.0, 0.68, 0.78);
+            gem.rotation.y = Math.PI / 4;
+            gem.rotation.z = Math.PI / 18;
+            break;
+        case 'aquamarin':
+            gem = BABYLON.MeshBuilder.CreateCylinder('gem', {
+                diameterTop: 0.12,
+                diameterBottom: 0.42,
+                height: 0.34,
+                tessellation: 10
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.1, 1, 1.05);
+            gem.rotation.x = Math.PI / 2;
+            gem.rotation.z = Math.PI / 10;
+            break;
+        case 'perle':
+            gem = BABYLON.MeshBuilder.CreateSphere('gem', {
+                diameter: 0.34,
+                segments: 32
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.0, 0.96, 1.0);
+            break;
+        case 'jade':
+            gem = BABYLON.MeshBuilder.CreatePolyhedron('gem', {
+                type: 7,
+                size: 0.24,
+                updatable: false
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.1, 1.05, 1.1);
+            gem.rotation.y = Math.PI / 6;
+            gem.rotation.x = Math.PI / 14;
+            break;
+        case 'tansanit':
+            gem = BABYLON.MeshBuilder.CreateCylinder('gem', {
+                diameterTop: 0.18,
+                diameterBottom: 0.34,
+                height: 0.4,
+                tessellation: 6
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.0, 1.0, 1.0);
+            gem.rotation.x = Math.PI / 2;
+            gem.rotation.y = Math.PI / 6;
+            break;
+        case 'alexandrit':
+            gem = BABYLON.MeshBuilder.CreatePolyhedron('gem', {
+                type: 6,
+                size: 0.23,
+                updatable: false
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.12, 1.02, 1.08);
+            gem.rotation.y = Math.PI / 8;
+            break;
+        case 'opal':
+            gem = BABYLON.MeshBuilder.CreateSphere('gem', {
+                diameter: 0.35,
+                segments: 20
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1.0, 1.05, 0.94);
+            gem.rotation.y = Math.PI / 12;
+            break;
+        case 'paraiba-turmalin':
+            gem = BABYLON.MeshBuilder.CreateCylinder('gem', {
+                diameterTop: 0.16,
+                diameterBottom: 0.3,
+                height: 0.46,
+                tessellation: 8
+            }, scene);
+            gem.rotation.x = Math.PI / 2;
+            gem.rotation.y = Math.PI / 7;
+            break;
+        default:
+            gem = BABYLON.MeshBuilder.CreatePolyhedron('gem', {
+                type: 1,
+                size: 0.24,
+                updatable: false
+            }, scene);
+            gem.scaling = new BABYLON.Vector3(1, 1.18, 1);
+            break;
+    }
+
+    gem.position.y = yPosition;
+    gem.position.x = 0;
+    gem.position.z = 0;
+    gem.rotation.z = gem.rotation.z || 0;
+
+    const sparkle = gem.getChildMeshes?.() || [];
+    sparkle.forEach(child => {
+        child.isVisible = true;
+    });
+
+    return gem;
 }
 
 function createTwistedRing(scene) {
-    // Create a twisted path
     const path = [];
     const twists = 3;
     const segments = 120;
@@ -878,21 +1040,21 @@ function createBraceletMesh(scene) {
         addGems(scene, 20, 2);
     }
 
-    createPlatform(scene);
 }
 
 function addGems(scene, count, radius) {
+    const selectedJewel = ConfigState.selected.jewel;
     for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
-        const gem = BABYLON.MeshBuilder.CreateIcoSphere(`gem_${i}`, { radius: 0.1, subdivisions: 2 }, scene);
+        const gem = BABYLON.MeshBuilder.CreatePolyhedron(`gem_${i}`, { type: 1, size: 0.12 }, scene);
         gem.position.x = radius * Math.cos(angle);
         gem.position.z = radius * Math.sin(angle);
-        gem.position.y = 0;
+        gem.position.y = 0.08;
+        gem.rotation.y = angle;
+        gem.rotation.x = Math.PI / 8;
+        gem.scaling = new BABYLON.Vector3(1.08, 0.9, 1.08);
 
-        const gemMat = new BABYLON.PBRMaterial(`gemMat_${i}`, scene);
-        gemMat.albedoColor = new BABYLON.Color3(0.95, 0.95, 1);
-        gemMat.metallic = 0.1;
-        gemMat.roughness = 0.05;
+        const gemMat = createGemMaterial(scene, `gemMat_${i}`, selectedJewel?.color_hex);
         gem.material = gemMat;
 
         ConfigState.meshes[`gem_${i}`] = gem;
@@ -913,24 +1075,52 @@ function createMetalMaterial(scene) {
         mat.albedoColor = new BABYLON.Color3(0.75, 0.75, 0.75); // default silver
     }
 
-    mat.metallic = 0.95;
-    mat.roughness = 0.15;
-    mat.environmentIntensity = 1.2;
+    mat.metallic = 1;
+    mat.roughness = 0.08;
+    mat.environmentIntensity = 1.35;
+    mat.reflectivityColor = new BABYLON.Color3(0.95, 0.95, 0.95);
+    mat.microSurface = 0.96;
+    mat.clearCoat.isEnabled = true;
+    mat.clearCoat.intensity = 0.35;
+    mat.clearCoat.roughness = 0.12;
 
     return mat;
 }
 
-function createPlatform(scene) {
-    const platform = BABYLON.MeshBuilder.CreateCylinder('platform', {
-        diameter: 5, height: 0.1, tessellation: 64
-    }, scene);
-    platform.position.y = -1.2;
-    const platMat = new BABYLON.PBRMaterial('platMat', scene);
-    platMat.albedoColor = new BABYLON.Color3(0.08, 0.12, 0.08); // dark green
-    platMat.metallic = 0.3;
-    platMat.roughness = 0.7;
-    platform.material = platMat;
-    ConfigState.meshes.platform = platform;
+function createGemMaterial(scene, materialName = 'gemMat', colorHex = '#f5f9ff') {
+    const gemMat = new BABYLON.PBRMaterial(materialName, scene);
+    const color = hexToColor3(colorHex);
+    gemMat.albedoColor = color.scale(0.08);
+    gemMat.metallic = 0;
+    gemMat.roughness = 0;
+    gemMat.indexOfRefraction = 2.42;
+    gemMat.alpha = 0.96;
+    gemMat.microSurface = 1;
+    gemMat.environmentIntensity = 2.2;
+    gemMat.reflectivityColor = new BABYLON.Color3(1, 1, 1);
+    gemMat.subSurface.isRefractionEnabled = true;
+    gemMat.subSurface.isTranslucencyEnabled = true;
+    gemMat.subSurface.tintColor = color.scale(0.9);
+    gemMat.subSurface.tintColorAtDistance = 0.35;
+    gemMat.subSurface.volumeIndexOfRefraction = 2.42;
+    gemMat.subSurface.minimumThickness = 0.08;
+    gemMat.subSurface.maximumThickness = 0.28;
+    gemMat.clearCoat.isEnabled = true;
+    gemMat.clearCoat.intensity = 1;
+    gemMat.clearCoat.roughness = 0.02;
+
+    return gemMat;
+}
+
+function hexToColor3(hex) {
+    if (!hex || typeof hex !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(hex)) {
+        return new BABYLON.Color3(0.92, 0.97, 1);
+    }
+
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    return new BABYLON.Color3(r, g, b);
 }
 
 function update3DModel() {

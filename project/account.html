@@ -196,22 +196,127 @@
                 <button type="submit" class="btn btn-primary u-mt-12">
                   <i class="fas fa-save"></i> Speichern
                 </button>
-
-                <div class="account-danger-zone">
-                  <div class="account-danger-text">
-                    Achtung: Das Löschen deines Accounts ist endgültig.
-                  </div>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    id="deleteAccountBtn"
-                  >
-                    <i class="fas fa-user-slash"></i> Account löschen
-                  </button>
-                </div>
               </form>
+
+              <div class="account-section-divider"></div>
+
+              <h3 class="u-mt-12 account-section-title">Passwort ändern</h3>
+              <form id="changePasswordForm" class="u-mt-12">
+                <div class="form-group">
+                  <label class="form-label" for="currentPassword">Aktuelles Passwort</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      class="form-input"
+                      id="currentPassword"
+                      autocomplete="current-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-password-target="currentPassword"
+                      aria-label="Passwort anzeigen"
+                      aria-pressed="false"
+                    >
+                      <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="newPassword">Neues Passwort</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      class="form-input"
+                      id="newPassword"
+                      minlength="8"
+                      autocomplete="new-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-password-target="newPassword"
+                      aria-label="Passwort anzeigen"
+                      aria-pressed="false"
+                    >
+                      <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="newPasswordConfirm">Neues Passwort bestätigen</label>
+                  <div class="password-field">
+                    <input
+                      type="password"
+                      class="form-input"
+                      id="newPasswordConfirm"
+                      autocomplete="new-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-password-target="newPasswordConfirm"
+                      aria-label="Passwort anzeigen"
+                      aria-pressed="false"
+                    >
+                      <i class="fas fa-eye" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="changePasswordError" class="form-error u-mb-16"></div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-key"></i> Passwort ändern
+                </button>
+              </form>
+
+              <div class="account-section-divider"></div>
+
+              <div class="account-danger-zone">
+                <div class="account-danger-text">
+                  Achtung: Das Löschen deines Accounts ist endgültig.
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  id="deleteAccountBtn"
+                >
+                  <i class="fas fa-user-slash"></i> Account löschen
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteAccountModal">
+      <div class="modal">
+        <h2>Account wirklich löschen?</h2>
+        <p>Diese Aktion kann nicht rueckgaengig gemacht werden.</p>
+        <div class="form-row u-mt-12">
+          <button type="button" class="btn btn-secondary" id="cancelDeleteAccount">
+            Abbrechen
+          </button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteAccount">
+            Account löschen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="orderDetailModal">
+      <div class="modal order-detail-modal">
+        <button class="modal-close" id="closeOrderDetail" aria-label="Schliessen">
+          &times;
+        </button>
+        <div id="orderDetailContent">
+          <div class="loader"><div class="loader-spinner"></div></div>
         </div>
       </div>
     </div>
